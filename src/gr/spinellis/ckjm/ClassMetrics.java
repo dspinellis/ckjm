@@ -1,4 +1,4 @@
-package gr.spinellis.jmetrics;
+package gr.spinellis.ckjm;
 
 /**
  * Store details needed for calculating a class's Chidamber-Kemerer metrics.
@@ -7,7 +7,7 @@ package gr.spinellis.jmetrics;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.3 2005/02/18 12:30:43 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.4 2005/02/18 19:27:38 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class ClassMetrics {

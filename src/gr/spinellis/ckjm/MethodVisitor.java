@@ -1,4 +1,4 @@
-package gr.spinellis.jmetrics;
+package gr.spinellis.ckjm;
 
 import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.Utility;
@@ -12,7 +12,7 @@ import java.util.*;
  * A helper class for ClassVisitor.
  *
  * @see ClassVisitor
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.4 2005/02/18 09:55:59 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.5 2005/02/18 19:27:38 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class MethodVisitor extends EmptyVisitor {

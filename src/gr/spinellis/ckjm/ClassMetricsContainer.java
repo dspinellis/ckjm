@@ -1,4 +1,4 @@
-package gr.spinellis.jmetrics;
+package gr.spinellis.ckjm;
 
 import java.util.*;
 import java.io.*;

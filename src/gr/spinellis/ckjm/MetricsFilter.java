@@ -1,4 +1,4 @@
-package gr.spinellis.jmetrics;
+package gr.spinellis.ckjm;
 
 import org.apache.bcel.classfile.*;
 import org.apache.bcel.generic.*;
@@ -16,7 +16,7 @@ import java.util.*;
  * six Chidamber Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.3 2005/02/18 12:59:40 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.4 2005/02/18 19:27:38 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {

@@ -1,4 +1,4 @@
-package gr.spinellis.jmetrics;
+package gr.spinellis.ckjm;
 
 import org.apache.bcel.classfile.*;
 import org.apache.bcel.generic.*;
@@ -12,7 +12,7 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.7 2005/02/18 12:30:43 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.8 2005/02/18 19:27:38 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -145,7 +145,6 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	 * Q = set of all nonempty set intersections
 	 */
 	int lcom = 0;
-	System.out.println(mi.size());
 	for (int i = 0; i < mi.size(); i++)
 		for (int j = i + 1; j < mi.size(); j++) {
 			/* A shallow unknown-type copy is enough */
