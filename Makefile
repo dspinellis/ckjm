@@ -1,5 +1,5 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.1 2005/02/21 17:24:44 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.2 2005/02/21 17:36:39 dds Exp $
 #
 
 VERSION=1.1
@@ -27,6 +27,7 @@ $(TARBALL): docs Makefile
 	do\
 	perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//' $$i >$(DISTDIR)/$$i;\
 	done
+	perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//;print q{<property name="version" value="'$(VERSION)'"/> } if (/VERSION/)' build.xml >$(DISTDIR)/build.xml
 	tar cvf - $(DISTDIR) | gzip -c >$(TARBALL)
 	zip -r $(ZIPBALL) $(DISTDIR)
 
