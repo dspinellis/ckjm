@@ -12,7 +12,7 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.5 2005/02/18 09:55:59 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.6 2005/02/18 11:33:26 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -146,6 +146,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	 * Q = set of all nonempty set intersections
 	 */
 	int lcom = 0;
+	System.out.println(mi.size());
 	for (int i = 0; i < mi.size(); i++)
 		for (int j = i + 1; j < mi.size(); j++) {
 			/* A shallow unknown-type copy is enough */
@@ -157,21 +158,5 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 				lcom--;
 		}
 	cm.setLcom(lcom > 0 ? lcom : 0);
-  }
-
-  /** Default main method
-   */
-  public static void main(String[] argv) throws Exception {
-    JavaClass java_class;
-    ClassMap cm = new ClassMap();
-    String    name = argv[0];
-
-    if((java_class = Repository.lookupClass(name)) == null)
-      java_class = new ClassParser(name).parse(); // May throw IOException
-
-    ClassVisitor visitor = new ClassVisitor(java_class, cm);
-    visitor.start();
-    visitor.end();
-    cm.printMetrics(System.out);
   }
 }
