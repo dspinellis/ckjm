@@ -7,7 +7,7 @@ import java.io.*;
 class ClassMap {
 
 	/** The map from class names to the corresponding metrics */
-	private HashMap<String, ClassMetrics> m = new HashMap();
+	private HashMap<String, ClassMetrics> m = new HashMap<String, ClassMetrics>();
 
 	/** Return a class's metrics */
 	public ClassMetrics getMetrics(String name) {
@@ -26,7 +26,8 @@ class ClassMap {
 
 		for (i = entries.iterator(); i.hasNext(); ) {
 			Map.Entry<String, ClassMetrics> e = i.next();
-			out.println(e.getKey() + " " + e.getValue());
+			if (!ClassMetrics.isJdkClass(e.getKey()))
+				out.println(e.getKey() + " " + e.getValue());
 		}
 	}
 }

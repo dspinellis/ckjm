@@ -9,38 +9,37 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Visit a class calculating its Chidamber-Kemerer metrics.
+ * Visit a class updating its Chidamber-Kemerer metrics.
  *
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.4 2005/02/18 08:03:15 dds Exp $
+ * @see ClassMetrics
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.5 2005/02/18 09:55:59 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
-
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   private JavaClass         _clazz;
-  private PrintWriter       _out;
   private ConstantPoolGen   _cp;
   private String myClassName;
   private ClassMap   cmap;
   private ClassMetrics   cm;
-  /* Classes encountered */
-  private HashSet<String> coupledClasses;
-  /** Methods encountered */
-  private HashSet<String> responseSet;
-  /** Use of fields in methods */
-  ArrayList<TreeSet<String>> mi = new ArrayList();
+  /* Classes encountered (CBO) */
+  private HashSet<String> coupledClasses = new HashSet<String>();
+  /** Methods encountered (WMC) */
+  private HashSet<String> responseSet = new HashSet<String>();
+  /** Use of fields in methods (LCOM)
+   * We use a Tree rather than a Hash to calculate the
+   * intersection in O(n) instead of O(n*n).
+   */
+  ArrayList<TreeSet<String>> mi = new ArrayList<TreeSet<String>>();
 
   /** @param clazz Java class to "decompile"
    * @param out where to output Java program
    */
-  public ClassVisitor(JavaClass clazz, ClassMap classMap, OutputStream out) {
+  public ClassVisitor(JavaClass clazz, ClassMap classMap) {
     _clazz = clazz;
-    _out = new PrintWriter(out);
     _cp = new ConstantPoolGen(_clazz.getConstantPool());
     cmap = classMap;
     myClassName = clazz.getClassName();
     cm = cmap.getMetrics(myClassName);
-    coupledClasses = new HashSet();
-    responseSet = new HashSet();
   }
 
   public ClassMetrics getMetrics() { return cm; }
@@ -49,32 +48,22 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
    */
   public void start() {
     visitJavaClass(_clazz);
-    _out.flush();
   }
 
   public void visitJavaClass(JavaClass clazz) {
     String class_name   = clazz.getClassName();
     String super_name   = clazz.getSuperclassName();
     String package_name = clazz.getPackageName();
-    String inter        = Utility.printArray(clazz.getInterfaceNames(),
-					     false, true);
+
     ClassMetrics pm = cmap.getMetrics(super_name);
 
-    registerCoupling(super_name);
     pm.incNoc();
     cm.setParent(pm);
-
-    if(!"".equals(package_name)) {
-      class_name = class_name.substring(package_name.length() + 1);
-      _out.println("package " + package_name + ";\n");
-     }
-
-
-    _out.println("  public " + class_name  + "Creator() {");
-    _out.println("class " +
-		 (("".equals(package_name))? class_name :
-		  package_name + "." + class_name) +
-		 " extends " + super_name);
+    registerCoupling(super_name);
+    String ifs[] = clazz.getInterfaceNames();
+    /* Measuring decision: couple interfaces */
+    for (int i = 0; i < ifs.length; i++)
+	    registerCoupling(ifs[i]);
 
     Field[] fields = clazz.getFields();
 
@@ -88,9 +77,15 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   }
 
   /* Add a given class to the classes we are coupled to */
-  private void registerCoupling(String className) {
-	System.out.println("Coupling to " + className);
-  	coupledClasses.add(className);
+  public void registerCoupling(String className) {
+        /* Measuring decision: don't couple to Java SDK */
+	if (!ClassMetrics.isJdkClass(className))
+		coupledClasses.add(className);
+  }
+
+  /* Add the type's class to the classes we are coupled to */
+  public void registerCoupling(Type t) {
+  	registerCoupling(className(t));
   }
 
   /* Add a given class to the classes we are coupled to */
@@ -103,12 +98,12 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   /* Add a given method to our response set */
   void registerMethodInvocation(String className, String methodName) {
   	registerCoupling(className);
+    /* Measuring decision: calls to JDK methods are included in the RFC calculation */
   	responseSet.add(methodName);
   }
 
   public void visitField(Field field) {
-    _out.println("field " + field.getName() + "\n");
-    registerCoupling(className(field.getType()));
+    registerCoupling(field.getType());
   }
 
   public void visitMethod(Method method) {
@@ -117,67 +112,13 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     Type   result_type = mg.getReturnType();
     Type[] arg_types   = mg.getArgumentTypes();
 
-    registerCoupling(className(mg.getReturnType()));
+    registerCoupling(mg.getReturnType());
     for (int i = 0; i < arg_types.length; i++)
-	    registerCoupling(className(arg_types[i]));
-    _out.println("    MethodGen method = new MethodGen(" +
-		 printFlags(method.getAccessFlags()) +
-		 ", " + printType(result_type) +
-		 ", " + printArgumentTypes(arg_types) + ", " +
-		 "new String[] { " +
-		 Utility.printArray(mg.getArgumentNames(), false, true) +
-		 " }, \"" + method.getName() + "\", \"" +
-		 _clazz.getClassName() + "\", il, _cp);\n");
-
+	    registerCoupling(arg_types[i]);
     cm.incWmc();
-    mi.add(new TreeSet());
-    MethodVisitor factory = new MethodVisitor(mg, this, _out);
+    mi.add(new TreeSet<String>());
+    MethodVisitor factory = new MethodVisitor(mg, this);
     factory.start();
-
-  }
-
-  static String printFlags(int flags) {
-    return printFlags(flags, false);
-  }
-
-  static String printFlags(int flags, boolean for_class) {
-    if(flags == 0)
-      return "0";
-
-    StringBuffer buf = new StringBuffer();
-    for(int i=0, pow=1; i <= Constants.MAX_ACC_FLAG; i++) {
-      if((flags & pow) != 0) {
-	if((pow == Constants.ACC_SYNCHRONIZED) && for_class)
-	  buf.append("ACC_SUPER | ");
-	else
-	  buf.append("ACC_" + Constants.ACCESS_NAMES[i].toUpperCase() + " | ");
-      }
-
-      pow <<= 1;
-    }
-
-    String str = buf.toString();
-    return str.substring(0, str.length() - 3);
-  }
-
-  static String printArgumentTypes(Type[] arg_types) {
-    if(arg_types.length == 0)
-      return "Type.NO_ARGS";
-
-    StringBuffer args = new StringBuffer();
-
-    for(int i=0; i < arg_types.length; i++) {
-      args.append(printType(arg_types[i]));
-
-      if(i < arg_types.length - 1)
-	args.append(", ");
-    }
-
-    return "new Type[] { " + args.toString() + " }";
-  }
-
-  static String printType(Type type) {
-    return printType(type.getSignature());
   }
 
   /** Return a class name associated with a type */
@@ -194,28 +135,6 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     }
   }
 
-  static String printType(String signature) {
-    Type type = Type.getType(signature);
-    byte t    = type.getType();
-
-    if(t <= Constants.T_VOID) {
-      return "Type." + Constants.TYPE_NAMES[t].toUpperCase();
-    } else if(type.toString().equals("java.lang.String")) {
-      return "Type.STRING";
-    } else if(type.toString().equals("java.lang.Object")) {
-      return "Type.OBJECT";
-    } else if(type.toString().equals("java.lang.StringBuffer")) {
-      return "Type.STRINGBUFFER";
-    } else if(type instanceof ArrayType) {
-      ArrayType at = (ArrayType)type;
-
-      return "new ArrayType(" + printType(at.getBasicType()) +
-	", " + at.getDimensions() + ")";
-    } else {
-      return "new ObjectType(\"" + Utility.signatureToString(signature, false) +
-	"\")";
-    }
-  }
   /** Do final accounting at the end of the visit */
   public void end() {
   	cm.setCbo(coupledClasses.size());
@@ -229,8 +148,8 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	int lcom = 0;
 	for (int i = 0; i < mi.size(); i++)
 		for (int j = i + 1; j < mi.size(); j++) {
-			/* A shallow copy is enough */
-			TreeSet<String> intersection = (TreeSet<String>)mi.get(i).clone();
+			/* A shallow unknown-type copy is enough */
+			TreeSet<?> intersection = (TreeSet<?>)mi.get(i).clone();
 			intersection.retainAll(mi.get(j));
 			if (intersection.size() == 0)
 				lcom++;
@@ -247,11 +166,10 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     ClassMap cm = new ClassMap();
     String    name = argv[0];
 
-    OutputStream nul = new FileOutputStream("nul");
     if((java_class = Repository.lookupClass(name)) == null)
       java_class = new ClassParser(name).parse(); // May throw IOException
 
-    ClassVisitor visitor = new ClassVisitor(java_class, cm, nul);
+    ClassVisitor visitor = new ClassVisitor(java_class, cm);
     visitor.start();
     visitor.end();
     cm.printMetrics(System.out);

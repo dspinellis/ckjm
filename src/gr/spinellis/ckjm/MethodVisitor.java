@@ -8,25 +8,23 @@ import java.io.PrintWriter;
 import java.util.*;
 
 /**
- * Factory creates il.append() statements, and sets instruction targets.
+ * Visit a method calculating the class's Chidamber-Kemerer metrics.
  * A helper class for ClassVisitor.
  *
  * @see ClassVisitor
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.3 2005/02/18 07:30:47 dds Exp $
- * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.4 2005/02/18 09:55:59 dds Exp $
+ * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class MethodVisitor extends EmptyVisitor {
   private MethodGen       _mg;
-  private PrintWriter     _out;
   private ConstantPoolGen _cp;
   private ClassVisitor    cv;
   private ClassMetrics    cm;
 
-  MethodVisitor(MethodGen mg, ClassVisitor c, PrintWriter out) {
+  MethodVisitor(MethodGen mg, ClassVisitor c) {
     _mg  = mg;
     cv = c;
     _cp  = mg.getConstantPool();
-    _out = out;
     cm = cv.getMetrics();
   }
 
@@ -39,274 +37,70 @@ class MethodVisitor extends EmptyVisitor {
 	  ih != null; ih = ih.getNext()) {
 	Instruction i = ih.getInstruction();
 
-	if(i instanceof BranchInstruction) {
-	  branch_map.put(i, ih); // memorize container
-	}
-
-	if(ih.hasTargeters()) {
-	  if(i instanceof BranchInstruction) {
-	    _out.println("    InstructionHandle ih_" + ih.getPosition() + ";");
-	  } else {
-	    _out.print("    InstructionHandle ih_" + ih.getPosition() + " = ");
-	  }
-	} else {
-	  _out.print("    ");
-	}
-
 	if(!visitInstruction(i))
 	  i.accept(this);
       }
 
-      updateBranchTargets();
       updateExceptionHandlers();
     }
   }
 
   private boolean visitInstruction(Instruction i) {
     short opcode = i.getOpcode();
-    
+
     if((InstructionConstants.INSTRUCTIONS[opcode] != null) &&
        !(i instanceof ConstantPushInstruction) &&
        !(i instanceof ReturnInstruction)) { // Handled below
-      _out.println("il.append(InstructionConstants." +
-		   i.getName().toUpperCase() + ");");
       return true;
     }
-
     return false;
   }
 
   public void visitLocalVariableInstruction(LocalVariableInstruction i) {
-    short  opcode = i.getOpcode();
-    Type   type   = i.getType(_cp);
-
-    if(opcode == Constants.IINC) {
-      _out.println("il.append(new IINC(" + i.getIndex() + ", " +
-		   ((IINC)i).getIncrement() + "));");
-    } else {
-      String kind   = (opcode < Constants.ISTORE)? "Load" : "Store";
-      _out.println("il.append(_factory.create" + kind + "(" +
-		   ClassVisitor.printType(type) + ", " +
-		   i.getIndex() + "));");
-    }
+    if(i.getOpcode() != Constants.IINC)
+      cv.registerCoupling(i.getType(_cp));
   }
 
   public void visitArrayInstruction(ArrayInstruction i) {
-    short  opcode = i.getOpcode();
-    Type   type   = i.getType(_cp);
-    String kind   = (opcode < Constants.IASTORE)? "Load" : "Store";
-
-    _out.println("il.append(_factory.createArray" + kind + "(" +
-		 ClassVisitor.printType(type) + "));");
+    cv.registerCoupling(i.getType(_cp));
   }
 
   public void visitFieldInstruction(FieldInstruction i) {
-    short  opcode = i.getOpcode();
-
-    String class_name = i.getClassName(_cp);
-    String field_name = i.getFieldName(_cp);
-    Type   type       = i.getFieldType(_cp);
-
-    cv.registerFieldAccess(class_name, field_name);
-    _out.println("il.append(_factory.createFieldAccess(\"" +
-		 class_name + "\", \"" + field_name + "\", " +
-		 ClassVisitor.printType(type) + ", " +
-		 "Constants." + Constants.OPCODE_NAMES[opcode].toUpperCase() +
-		 "));");
+    cv.registerFieldAccess(i.getClassName(_cp), i.getFieldName(_cp));
+    cv.registerCoupling(i.getFieldType(_cp));
   }
 
   public void visitInvokeInstruction(InvokeInstruction i) {
-    short  opcode      = i.getOpcode();
-    String class_name  = i.getClassName(_cp);
-    String method_name = i.getMethodName(_cp);
-    Type   type        = i.getReturnType(_cp);
+
     Type[] arg_types   = i.getArgumentTypes(_cp);
+    for (int j = 0; j < arg_types.length; j++)
+	    cv.registerCoupling(arg_types[j]);
+    cv.registerCoupling(i.getReturnType(_cp));
 
-    /* We don't handle method overloading */
-    cv.registerMethodInvocation(class_name, method_name);
-    _out.println("il.append(_factory.createInvoke(\"" +
-		 class_name + "\", \"" + method_name + "\", " +
-		 ClassVisitor.printType(type) + ", " +
-		 ClassVisitor.printArgumentTypes(arg_types) + ", " +
-		 "Constants." + Constants.OPCODE_NAMES[opcode].toUpperCase() +
-		 "));");
-  }
-
-  public void visitAllocationInstruction(AllocationInstruction i) {
-    Type type;
-
-    if(i instanceof CPInstruction) {
-      type = ((CPInstruction)i).getType(_cp);
-    } else {
-      type = ((NEWARRAY)i).getType();
-    }
-
-    short opcode = ((Instruction)i).getOpcode();
-    int   dim    = 1;
-
-    switch(opcode) {
-    case Constants.NEW:
-      _out.println("il.append(_factory.createNew(\"" +
-		   ((ObjectType)type).getClassName() + "\"));");
-      break;
-
-    case Constants.MULTIANEWARRAY:
-      dim = ((MULTIANEWARRAY)i).getDimensions();
-
-    case Constants.ANEWARRAY:
-    case Constants.NEWARRAY:
-      _out.println("il.append(_factory.createNewArray(" +
-		   ClassVisitor.printType(type) + ", (short) " + dim + "));");
-      break;
-
-    default:
-      throw new RuntimeException("Oops: " + opcode);
-    }
-  }
-
-  private void createConstant(Object value) {
-    String embed = value.toString();
-
-    if(value instanceof String)
-      embed = '"' + Utility.convertString(value.toString()) + '"';
-    else if(value instanceof Character)
-      embed = "(char)0x" + Integer.toHexString(((Character)value).charValue());
-
-    _out.println("il.append(new PUSH(_cp, " + embed + "));");
-  }
-
-  public void visitLDC(LDC i) {
-    createConstant(i.getValue(_cp));
-  }
-
-  public void visitLDC2_W(LDC2_W i) {
-    createConstant(i.getValue(_cp));
-  }
-
-  public void visitConstantPushInstruction(ConstantPushInstruction i) {
-    createConstant(i.getValue());
+    /* Measuring decision: don't measure overloaded methods separately */
+    cv.registerMethodInvocation(i.getClassName(_cp), i.getMethodName(_cp));
   }
 
   public void visitINSTANCEOF(INSTANCEOF i) {
-    Type type = i.getType(_cp);
-
-    _out.println("il.append(new INSTANCEOF(_cp.addClass(" +
-		 ClassVisitor.printType(type) + ")));");
+    cv.registerCoupling(i.getType(_cp));
   }
 
   public void visitCHECKCAST(CHECKCAST i) {
-    Type type = i.getType(_cp);
-
-    _out.println("il.append(_factory.createCheckCast(" +
-		 ClassVisitor.printType(type) + "));");
+    cv.registerCoupling(i.getType(_cp));
   }
 
   public void visitReturnInstruction(ReturnInstruction i) {
-    Type type = i.getType(_cp);
-
-    _out.println("il.append(_factory.createReturn(" +
-		 ClassVisitor.printType(type) + "));");
-  }
-
-  // Memorize BranchInstructions that need an update
-  private ArrayList branches = new ArrayList();
-
-  public void visitBranchInstruction(BranchInstruction bi) {
-    BranchHandle bh   = (BranchHandle)branch_map.get(bi);
-    int          pos  = bh.getPosition();
-    String       name = bi.getName() + "_" + pos;
-
-    if(bi instanceof Select) {
-      Select s = (Select)bi;
-      branches.add(bi);
-
-      StringBuffer args   = new StringBuffer("new int[] { ");
-      int[]        matchs = s.getMatchs();
-
-      for(int i=0; i < matchs.length; i++) {
-	args.append(matchs[i]);
-
-	if(i < matchs.length - 1)
-	  args.append(", ");
-      }
-
-      args.append(" }");
-      
-      _out.print("    Select " + name + " = new " +
-		 bi.getName().toUpperCase() + "(" + args +
-		 ", new InstructionHandle[] { ");
-	
-      for(int i=0; i < matchs.length; i++) {
-	_out.print("null");
-	
-	if(i < matchs.length - 1)
-	  _out.print(", ");
-      } 
-
-      _out.println(");");
-    } else {
-      int    t_pos  = bh.getTarget().getPosition();
-      String target;
-
-      if(pos > t_pos) {
-	target = "ih_" + t_pos;
-      } else {
-	branches.add(bi);
-	target = "null";
-      }
-
-      _out.println("    BranchInstruction " + name +
-		   " = _factory.createBranchInstruction(" +
-		   "Constants." + bi.getName().toUpperCase() + ", " +
-		   target + ");");
-    }  
-
-    if(bh.hasTargeters())
-      _out.println("    ih_" + pos + " = il.append(" + name + ");");
-    else
-      _out.println("    il.append(" + name + ");");
-  }
-
-  public void visitRET(RET i) {
-    _out.println("il.append(new RET(" + i.getIndex() + ")));");
-  }
-
-  private void updateBranchTargets() {
-    for(Iterator i = branches.iterator(); i.hasNext(); ) {
-      BranchInstruction bi    = (BranchInstruction)i.next();
-      BranchHandle      bh    = (BranchHandle)branch_map.get(bi);
-      int               pos   = bh.getPosition();
-      String            name  = bi.getName() + "_" + pos;
-      int               t_pos = bh.getTarget().getPosition();
-
-      _out.println("    " + name + ".setTarget(ih_" + t_pos + ");");
-
-      if(bi instanceof Select) {
-	InstructionHandle[] ihs = ((Select)bi).getTargets();
-
-	for(int j = 0; j < ihs.length; j++) {
-	  t_pos = ihs[j].getPosition();
-
-	  _out.println("    " + name + ".setTarget(" + j +
-		       ", ih_" + t_pos + ");");
-	}
-      }
-    }
+    cv.registerCoupling(i.getType(_cp));
   }
 
   private void updateExceptionHandlers() {
     CodeExceptionGen[] handlers = _mg.getExceptionHandlers();
 
+    /* Measuring decision: couple exceptions */
     for(int i=0; i < handlers.length; i++) {
-      CodeExceptionGen h    = handlers[i];
-      String           type = (h.getCatchType() == null)?
-	"null" : ClassVisitor.printType(h.getCatchType());
-
-      _out.println("    method.addExceptionHandler(" +
-		   "ih_" + h.getStartPC().getPosition() + ", " +
-		   "ih_" + h.getEndPC().getPosition() + ", " +
-		   "ih_" + h.getHandlerPC().getPosition() + ", " +
-		   type + ");");
+      Type t = handlers[i].getCatchType();
+      if (t != null)
+      	cv.registerCoupling(t);
     }
   }
 }

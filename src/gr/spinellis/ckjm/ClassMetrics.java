@@ -1,5 +1,15 @@
 package gr.spinellis.jmetrics;
 
+/**
+ * Store details needed for calculating a class's Chidamber-Kemerer metrics.
+ * Most fields in this class are set by ClassVisitor.
+ * This class also encapsulates some policy decision regarding metrics
+ * measurement.
+ *
+ * @see ClassVisitor
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.2 2005/02/18 09:55:59 dds Exp $
+ * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
+ */
 class ClassMetrics {
 
 	ClassMetrics() {
@@ -61,8 +71,17 @@ class ClassMetrics {
 	/** Set the class's lack of cohesion in methods metric */
 	public void setLcom(int l) { lcom = l; }
 
+	/** Return true if the class name is part of the Java SDK */
+	public static boolean isJdkClass(String s) {
+		return (s.startsWith("java.") ||
+			s.startsWith("javax.") ||
+			s.startsWith("org.omg.") ||
+			s.startsWith("org.w3c.dom.") ||
+			s.startsWith("org.xml.sax."));
+	}
+
 	public String toString() {
-		return
+			return
 			"WMC=" + wmc +
 			" DIT=" + getDit() +
 			" NOC=" + noc +
