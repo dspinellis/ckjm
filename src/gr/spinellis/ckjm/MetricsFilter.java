@@ -16,7 +16,7 @@ import java.util.*;
  * six Chidamber Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.2 2005/02/18 12:30:43 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.3 2005/02/18 12:59:40 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {
@@ -25,7 +25,7 @@ public class MetricsFilter {
 	  * The class specification can be either a class file name, or
 	  * a jarfile, followed by space, followed by a class file name.
 	  */
-	static JavaClass parseClass(String clspec) {
+	static void processClass(ClassMap cm, String clspec) {
 		int spc;
 		JavaClass jc = null;
 
@@ -44,21 +44,31 @@ public class MetricsFilter {
 				System.err.println("Error loading " + clspec + ": " + e);
 			}
 		}
-		return jc;
+		if (jc != null) {
+			ClassVisitor visitor = new ClassVisitor(jc, cm);
+			visitor.start();
+			visitor.end();
+		}
 	}
 
 	public static void main(String[] argv) {
 		ClassMap cm = new ClassMap();
-		String    name = argv[0];
 
-		for (int i = 0; i < argv.length; i++) {
-			JavaClass jc = parseClass(argv[i]);
-			if (jc != null) {
-				ClassVisitor visitor = new ClassVisitor(jc, cm);
-				visitor.start();
-				visitor.end();
+		if (argv.length == 0) {
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			try {
+				String s;
+				while ((s = in.readLine()) != null)
+					processClass(cm, s);
+			} catch (Exception e) {
+				System.err.println("Error reading line: " + e);
+				System.exit(1);
 			}
 		}
+
+		for (int i = 0; i < argv.length; i++)
+			processClass(cm, argv[i]);
+
 		cm.printMetrics(System.out);
 	}
 }
