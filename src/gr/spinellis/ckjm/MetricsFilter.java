@@ -1,3 +1,19 @@
+/*
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.5 2005/02/18 19:35:48 dds Exp $
+ *
+ * (C) Copyright 2005 Diomidis Spinellis
+ *
+ * Permission to use, copy, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+ * MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 package gr.spinellis.ckjm;
 
 import org.apache.bcel.classfile.*;
@@ -16,7 +32,7 @@ import java.util.*;
  * six Chidamber Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.4 2005/02/18 19:27:38 dds Exp $
+ * @version $Revision: 1.5 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {
@@ -25,7 +41,7 @@ public class MetricsFilter {
 	  * The class specification can be either a class file name, or
 	  * a jarfile, followed by space, followed by a class file name.
 	  */
-	static void processClass(ClassMap cm, String clspec) {
+	static void processClass(ClassMetricsContainer cm, String clspec) {
 		int spc;
 		JavaClass jc = null;
 
@@ -52,7 +68,7 @@ public class MetricsFilter {
 	}
 
 	public static void main(String[] argv) {
-		ClassMap cm = new ClassMap();
+		ClassMetricsContainer cm = new ClassMetricsContainer();
 
 		if (argv.length == 0) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));

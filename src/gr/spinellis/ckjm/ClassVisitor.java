@@ -1,3 +1,19 @@
+/*
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.9 2005/02/18 19:35:48 dds Exp $
+ *
+ * (C) Copyright 2005 Diomidis Spinellis
+ *
+ * Permission to use, copy, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted,
+ * provided that the above copyright notice appear in all copies and that
+ * both that copyright notice and this permission notice appear in
+ * supporting documentation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+ * MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
 package gr.spinellis.ckjm;
 
 import org.apache.bcel.classfile.*;
@@ -12,14 +28,14 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.8 2005/02/18 19:27:38 dds Exp $
+ * @version $Revision: 1.9 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   private JavaClass         _clazz;
   private ConstantPoolGen   _cp;
   private String myClassName;
-  private ClassMap   cmap;
+  private ClassMetricsContainer   cmap;
   private ClassMetrics   cm;
   /* Classes encountered (CBO) */
   private HashSet<String> coupledClasses = new HashSet<String>();
@@ -33,7 +49,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
   /** @param clazz Java class to "decompile"
    */
-  public ClassVisitor(JavaClass clazz, ClassMap classMap) {
+  public ClassVisitor(JavaClass clazz, ClassMetricsContainer classMap) {
     _clazz = clazz;
     _cp = new ConstantPoolGen(_clazz.getConstantPool());
     cmap = classMap;
