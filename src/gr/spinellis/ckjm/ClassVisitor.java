@@ -6,6 +6,7 @@ import org.apache.bcel.Repository;
 import org.apache.bcel.Constants;
 import org.apache.bcel.util.*;
 import java.io.*;
+import java.util.*;
 
 /** 
  * This class takes a given JavaClass object and converts it to a
@@ -14,22 +15,38 @@ import java.io.*;
  * are done with BCEL. It does not cover all features of BCEL,
  * but tries to mimic hand-written code as close as possible.
  *
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.2 2005/02/17 09:44:06 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.3 2005/02/18 07:32:37 dds Exp $
  * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A> 
  */
-public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
+public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   private JavaClass         _clazz;
   private PrintWriter       _out;
   private ConstantPoolGen   _cp;
+  private String myClassName;
+  private ClassMap   cmap;
+  private ClassMetrics   cm;
+  /* Classes encountered */
+  private HashSet<String> coupledClasses;
+  /** Methods encountered */
+  private HashSet<String> responseSet;
+  /** Use of fields in methods */
+  ArrayList<TreeSet<String>> mi = new ArrayList();
 
   /** @param clazz Java class to "decompile"
    * @param out where to output Java program
    */
-  public TextUi(JavaClass clazz, OutputStream out) {
+  public ClassVisitor(JavaClass clazz, ClassMap classMap, OutputStream out) {
     _clazz = clazz;
     _out = new PrintWriter(out);
     _cp = new ConstantPoolGen(_clazz.getConstantPool());
+    cmap = classMap;
+    myClassName = clazz.getClassName();
+    cm = cmap.getMetrics(myClassName);
+    coupledClasses = new HashSet();
+    responseSet = new HashSet();
   }
+
+  public ClassMetrics getMetrics() { return cm; }
 
   /** Start Java code generation
    */
@@ -44,6 +61,11 @@ public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
     String package_name = clazz.getPackageName();
     String inter        = Utility.printArray(clazz.getInterfaceNames(),
 					     false, true);
+    ClassMetrics pm = cmap.getMetrics(super_name);
+
+    pm.incNoc();
+    cm.setParent(pm);
+
     if(!"".equals(package_name)) {
       class_name = class_name.substring(package_name.length() + 1);
       _out.println("package " + package_name + ";\n");
@@ -51,56 +73,42 @@ public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
 
 
     _out.println("  public " + class_name  + "Creator() {");
-    _out.println("    _cg = new ClassGen(\"" +
+    _out.println("class " +
 		 (("".equals(package_name))? class_name :
 		  package_name + "." + class_name) +
-		 "\", \"" + super_name + "\", " +
-		 "\"" + clazz.getSourceFileName() + "\", " +
-		 printFlags(clazz.getAccessFlags(), true) + ", " +
-		 "new String[] { " + inter + " });\n");
-
-    printCreate();
+		 " extends " + super_name);
 
     Field[] fields = clazz.getFields();
 
-      for(int i=0; i < fields.length; i++) {
+      for(int i=0; i < fields.length; i++)
 	fields[i].accept(this);
-      }
 
     Method[] methods = clazz.getMethods();
 
-    for(int i=0; i < methods.length; i++) {
-      _out.println("  private void createMethod_" + i + "() {");   
-
+    for(int i=0; i < methods.length; i++)
       methods[i].accept(this);
-      _out.println("  }\n");   
-    }
-
-  }
-  
-  private void printCreate() {
-    _out.println("  public void create(OutputStream out) throws IOException {");
-
-    Field[] fields = _clazz.getFields();
-
-    Method[] methods = _clazz.getMethods();
   }
 
+  /* Add a given class to the classes we are coupled to */
+  private void registerCoupling(String classname) {
+  	coupledClasses.add(classname);
+  }
+
+  /* Add a given class to the classes we are coupled to */
+  void registerFieldAccess(String className, String fieldName) {
+  	registerCoupling(className);
+	if (className.equals(myClassName))
+		mi.get(mi.size() - 1).add(fieldName);
+  }
+
+  /* Add a given method to our response set */
+  void registerMethodInvocation(String className, String methodName) {
+  	registerCoupling(className);
+  	responseSet.add(methodName);
+  }
 
   public void visitField(Field field) {
-    _out.println("\n    field = new FieldGen(" +
-		 printFlags(field.getAccessFlags()) +
-		 ", " + printType(field.getSignature()) + ", \"" +
-		 field.getName() + "\", _cp);");
-
-    ConstantValue cv = field.getConstantValue();
-
-    if(cv != null) {
-      String value = cv.toString();
-      _out.println("    field.setInitValue(" + value + ")");
-    }
-
-    _out.println("    _cg.addField(field.getField());");
+    _out.println("field " + field.getName() + "\n");
   }
 
   public void visitMethod(Method method) {
@@ -117,9 +125,11 @@ public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
 		 Utility.printArray(mg.getArgumentNames(), false, true) +
 		 " }, \"" + method.getName() + "\", \"" +
 		 _clazz.getClassName() + "\", il, _cp);\n");
-    
-    //BCELFactory factory = new BCELFactory(mg, _out);
-    //factory.start();
+
+    cm.incWmc();
+    mi.add(new TreeSet());
+    MethodVisitor factory = new MethodVisitor(mg, this, _out);
+    factory.start();
 
   }
 
@@ -189,17 +199,44 @@ public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
 	"\")";
     }
   }
+  /** Do final accounting at the end of the visit */
+  public void end() {
+  	cm.setCbo(coupledClasses.size());
+  	cm.setRfc(responseSet.size());
+	/*
+	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
+	 * where
+	 * P = set of all empty set intersections
+	 * Q = set of all nonempty set intersections
+	 */
+	int lcom = 0;
+	for (int i = 0; i < mi.size(); i++)
+		for (int j = i + 1; j < mi.size(); j++) {
+			/* A shallow copy is enough */
+			TreeSet<String> intersection = (TreeSet<String>)mi.get(i).clone();
+			intersection.retainAll(mi.get(j));
+			if (intersection.size() == 0)
+				lcom++;
+			else
+				lcom--;
+		}
+	cm.setLcom(lcom > 0 ? lcom : 0);
+  }
 
   /** Default main method
    */
   public static void main(String[] argv) throws Exception {
     JavaClass java_class;
+    ClassMap cm = new ClassMap();
     String    name = argv[0];
 
+    OutputStream nul = new FileOutputStream("nul");
     if((java_class = Repository.lookupClass(name)) == null)
       java_class = new ClassParser(name).parse(); // May throw IOException
 
-    TextUi bcelifier = new TextUi(java_class, System.out);
-    bcelifier.start();
+    ClassVisitor visitor = new ClassVisitor(java_class, cm, nul);
+    visitor.start();
+    visitor.end();
+    cm.printMetrics(System.out);
   }
 }
