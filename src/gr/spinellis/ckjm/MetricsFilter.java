@@ -10,13 +10,13 @@ import java.util.*;
 
 /**
  * Convert a list of classes into their metrics.
- * Read from the standard input lines containing a class path
- * and a class name separated by a space.
+ * Read from the standard input lines containing a class file
+ * name or a jar file name, followed by a space and a class file name.
  * Display on the standard output the name of each class, followed by its
  * six Chidamber Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.1 2005/02/18 11:33:24 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.2 2005/02/18 12:30:43 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {

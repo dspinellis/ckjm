@@ -7,7 +7,7 @@ package gr.spinellis.jmetrics;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.2 2005/02/18 09:55:59 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.3 2005/02/18 12:30:43 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class ClassMetrics {
@@ -17,6 +17,7 @@ class ClassMetrics {
 		noc = 0;
 		cbo = 0;
 		parent = null;
+		visited = false;
 	}
 
 	/** Weighted methods per class */
@@ -89,4 +90,16 @@ class ClassMetrics {
 			" RFC=" + rfc +
 			" LCOM=" + lcom;
 	}
+
+	/** True if the class has been visited by the metrics gatherer */
+	private boolean visited;
+	/** Mark the instance as visited by the metrics analyzer */
+	public void setVisited() { visited = true; }
+	/**
+	 * Return true if the class has been visited by the metrics analyzer.
+	 * Classes may appear in the collection as a result of some kind
+	 * of coupling.  However, unless they are visited an analyzed,
+	 * we do not want them to appear in the output results.
+	 */
+	public boolean isVisited() { return visited; }
 }

@@ -26,8 +26,11 @@ class ClassMap {
 
 		for (i = entries.iterator(); i.hasNext(); ) {
 			Map.Entry<String, ClassMetrics> e = i.next();
-			if (!ClassMetrics.isJdkClass(e.getKey()))
-				out.println(e.getKey() + " " + e.getValue());
+			if (!ClassMetrics.isJdkClass(e.getKey())) {
+				ClassMetrics cm = e.getValue();
+				if (cm.isVisited())
+					out.println(e.getKey() + " " + cm);
+			}
 		}
 	}
 }

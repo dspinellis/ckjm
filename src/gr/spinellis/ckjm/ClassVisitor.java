@@ -12,7 +12,7 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.6 2005/02/18 11:33:26 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.7 2005/02/18 12:30:43 dds Exp $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -32,7 +32,6 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   ArrayList<TreeSet<String>> mi = new ArrayList<TreeSet<String>>();
 
   /** @param clazz Java class to "decompile"
-   * @param out where to output Java program
    */
   public ClassVisitor(JavaClass clazz, ClassMap classMap) {
     _clazz = clazz;
@@ -51,10 +50,10 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   }
 
   public void visitJavaClass(JavaClass clazz) {
-    String class_name   = clazz.getClassName();
     String super_name   = clazz.getSuperclassName();
     String package_name = clazz.getPackageName();
 
+    cm.setVisited();
     ClassMetrics pm = cmap.getMetrics(super_name);
 
     pm.incNoc();
@@ -99,7 +98,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   void registerMethodInvocation(String className, String methodName) {
   	registerCoupling(className);
     /* Measuring decision: calls to JDK methods are included in the RFC calculation */
-  	responseSet.add(methodName);
+  	responseSet.add(className + "." + methodName);
   }
 
   public void visitField(Field field) {
