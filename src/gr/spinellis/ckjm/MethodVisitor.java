@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.6 2005/02/18 19:35:48 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.7 2005/02/19 07:37:24 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -17,10 +17,8 @@
 package gr.spinellis.ckjm;
 
 import org.apache.bcel.generic.*;
-import org.apache.bcel.classfile.Utility;
 import org.apache.bcel.Constants;
 import org.apache.bcel.util.*;
-import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -28,95 +26,101 @@ import java.util.*;
  * A helper class for ClassVisitor.
  *
  * @see ClassVisitor
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class MethodVisitor extends EmptyVisitor {
-  private MethodGen       _mg;
-  private ConstantPoolGen _cp;
-  private ClassVisitor    cv;
-  private ClassMetrics    cm;
+    /** Method generation template. */
+    private MethodGen mg;
+    /* The class's constant pool. */
+    private ConstantPoolGen cp;
+    /** The visitor of the class the method visitor is in. */
+    private ClassVisitor cv;
+    /** The metrics of the class the method visitor is in. */
+    private ClassMetrics cm;
 
-  MethodVisitor(MethodGen mg, ClassVisitor c) {
-    _mg  = mg;
-    cv = c;
-    _cp  = mg.getConstantPool();
-    cm = cv.getMetrics();
-  }
-
-  private HashMap branch_map = new HashMap(); // Map<Instruction, InstructionHandle>
-
-  public void start() {
-
-    if(!_mg.isAbstract() && !_mg.isNative()) {
-      for(InstructionHandle ih = _mg.getInstructionList().getStart();
-	  ih != null; ih = ih.getNext()) {
-	Instruction i = ih.getInstruction();
-
-	if(!visitInstruction(i))
-	  i.accept(this);
-      }
-
-      updateExceptionHandlers();
+    /** Constructor. */
+    MethodVisitor(MethodGen m, ClassVisitor c) {
+	mg  = m;
+	cv = c;
+	cp  = mg.getConstantPool();
+	cm = cv.getMetrics();
     }
-  }
 
-  private boolean visitInstruction(Instruction i) {
-    short opcode = i.getOpcode();
+    /** Start the method's visit. */
+    public void start() {
+	if (!mg.isAbstract() && !mg.isNative()) {
+	    for (InstructionHandle ih = mg.getInstructionList().getStart();
+		 ih != null; ih = ih.getNext()) {
+		Instruction i = ih.getInstruction();
 
-    if((InstructionConstants.INSTRUCTIONS[opcode] != null) &&
-       !(i instanceof ConstantPushInstruction) &&
-       !(i instanceof ReturnInstruction)) { // Handled below
-      return true;
+		if(!visitInstruction(i))
+		    i.accept(this);
+	    }
+	    updateExceptionHandlers();
+	}
     }
-    return false;
-  }
 
-  public void visitLocalVariableInstruction(LocalVariableInstruction i) {
-    if(i.getOpcode() != Constants.IINC)
-      cv.registerCoupling(i.getType(_cp));
-  }
+    /** Visit a single instruction. */
+    private boolean visitInstruction(Instruction i) {
+	short opcode = i.getOpcode();
 
-  public void visitArrayInstruction(ArrayInstruction i) {
-    cv.registerCoupling(i.getType(_cp));
-  }
+	return ((InstructionConstants.INSTRUCTIONS[opcode] != null) &&
+	   !(i instanceof ConstantPushInstruction) &&
+	   !(i instanceof ReturnInstruction));
+    }
 
-  public void visitFieldInstruction(FieldInstruction i) {
-    cv.registerFieldAccess(i.getClassName(_cp), i.getFieldName(_cp));
-    cv.registerCoupling(i.getFieldType(_cp));
-  }
+    /** Local variable use. */
+    public void visitLocalVariableInstruction(LocalVariableInstruction i) {
+	if(i.getOpcode() != Constants.IINC)
+	    cv.registerCoupling(i.getType(cp));
+    }
 
-  public void visitInvokeInstruction(InvokeInstruction i) {
+    /** Array use. */
+    public void visitArrayInstruction(ArrayInstruction i) {
+	cv.registerCoupling(i.getType(cp));
+    }
 
-    Type[] arg_types   = i.getArgumentTypes(_cp);
-    for (int j = 0; j < arg_types.length; j++)
+    /** Field access. */
+    public void visitFieldInstruction(FieldInstruction i) {
+	cv.registerFieldAccess(i.getClassName(cp), i.getFieldName(cp));
+	cv.registerCoupling(i.getFieldType(cp));
+    }
+
+    /** Method invocation. */
+    public void visitInvokeInstruction(InvokeInstruction i) {
+	Type[] arg_types   = i.getArgumentTypes(cp);
+	for (int j = 0; j < arg_types.length; j++)
 	    cv.registerCoupling(arg_types[j]);
-    cv.registerCoupling(i.getReturnType(_cp));
-
-    /* Measuring decision: don't measure overloaded methods separately */
-    cv.registerMethodInvocation(i.getClassName(_cp), i.getMethodName(_cp));
-  }
-
-  public void visitINSTANCEOF(INSTANCEOF i) {
-    cv.registerCoupling(i.getType(_cp));
-  }
-
-  public void visitCHECKCAST(CHECKCAST i) {
-    cv.registerCoupling(i.getType(_cp));
-  }
-
-  public void visitReturnInstruction(ReturnInstruction i) {
-    cv.registerCoupling(i.getType(_cp));
-  }
-
-  private void updateExceptionHandlers() {
-    CodeExceptionGen[] handlers = _mg.getExceptionHandlers();
-
-    /* Measuring decision: couple exceptions */
-    for(int i=0; i < handlers.length; i++) {
-      Type t = handlers[i].getCatchType();
-      if (t != null)
-      	cv.registerCoupling(t);
+	cv.registerCoupling(i.getReturnType(cp));
+	/* Measuring decision: don't measure overloaded methods separately */
+	cv.registerMethodInvocation(i.getClassName(cp), i.getMethodName(cp));
     }
-  }
+
+    /** Visit an instanceof instruction. */
+    public void visitINSTANCEOF(INSTANCEOF i) {
+	cv.registerCoupling(i.getType(cp));
+    }
+
+    /** Visit checklast instruction. */
+    public void visitCHECKCAST(CHECKCAST i) {
+	cv.registerCoupling(i.getType(cp));
+    }
+
+    /** Visit return instruction. */
+    public void visitReturnInstruction(ReturnInstruction i) {
+	cv.registerCoupling(i.getType(cp));
+    }
+
+    /** Visit the method's exception handlers. */
+    private void updateExceptionHandlers() {
+	CodeExceptionGen[] handlers = mg.getExceptionHandlers();
+
+	/* Measuring decision: couple exceptions */
+	for(int i=0; i < handlers.length; i++) {
+	    Type t = handlers[i].getCatchType();
+	    if (t != null)
+		cv.registerCoupling(t);
+	}
+    }
 }

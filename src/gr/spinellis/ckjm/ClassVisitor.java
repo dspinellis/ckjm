@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.9 2005/02/18 19:35:48 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.10 2005/02/19 07:37:24 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -28,132 +28,141 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
-  private JavaClass         _clazz;
-  private ConstantPoolGen   _cp;
-  private String myClassName;
-  private ClassMetricsContainer   cmap;
-  private ClassMetrics   cm;
-  /* Classes encountered (CBO) */
-  private HashSet<String> coupledClasses = new HashSet<String>();
-  /** Methods encountered (WMC) */
-  private HashSet<String> responseSet = new HashSet<String>();
-  /** Use of fields in methods (LCOM)
-   * We use a Tree rather than a Hash to calculate the
-   * intersection in O(n) instead of O(n*n).
-   */
-  ArrayList<TreeSet<String>> mi = new ArrayList<TreeSet<String>>();
+    /** The class being visited. */
+    private JavaClass visitedClass;
+    /** The class's constant pool. */
+    private ConstantPoolGen cp;
+    /** The class's fully qualified name. */
+    private String myClassName;
+    /** The container where metrics for all classes are stored. */
+    private ClassMetricsContainer cmap;
+    /** The emtrics for the class being visited. */
+    private ClassMetrics cm;
+    /* Classes encountered.
+     * Its cardinality is used for calculating the CBO.
+     */
+    private HashSet<String> coupledClasses = new HashSet<String>();
+    /** Methods encountered.
+     * Its cardinality is used for calculating the WMC.
+     */
+    private HashSet<String> responseSet = new HashSet<String>();
+    /** Use of fields in methods.
+     * Its contents are used for calculating the LCOM.
+     * We use a Tree rather than a Hash to calculate the
+     * intersection in O(n) instead of O(n*n).
+     */
+    ArrayList<TreeSet<String>> mi = new ArrayList<TreeSet<String>>();
 
-  /** @param clazz Java class to "decompile"
-   */
-  public ClassVisitor(JavaClass clazz, ClassMetricsContainer classMap) {
-    _clazz = clazz;
-    _cp = new ConstantPoolGen(_clazz.getConstantPool());
-    cmap = classMap;
-    myClassName = clazz.getClassName();
-    cm = cmap.getMetrics(myClassName);
-  }
+    public ClassVisitor(JavaClass jc, ClassMetricsContainer classMap) {
+	visitedClass = jc;
+	cp = new ConstantPoolGen(visitedClass.getConstantPool());
+	cmap = classMap;
+	myClassName = jc.getClassName();
+	cm = cmap.getMetrics(myClassName);
+    }
 
-  public ClassMetrics getMetrics() { return cm; }
+    /** Return the class's metrics container. */
+    public ClassMetrics getMetrics() { return cm; }
 
-  /** Start Java code generation
-   */
-  public void start() {
-    visitJavaClass(_clazz);
-  }
+    public void start() {
+	visitJavaClass(visitedClass);
+    }
 
-  public void visitJavaClass(JavaClass clazz) {
-    String super_name   = clazz.getSuperclassName();
-    String package_name = clazz.getPackageName();
+    /** Calculate the class's metrics based on its elements. */
+    public void visitJavaClass(JavaClass jc) {
+	String super_name   = jc.getSuperclassName();
+	String package_name = jc.getPackageName();
 
-    cm.setVisited();
-    ClassMetrics pm = cmap.getMetrics(super_name);
+	cm.setVisited();
+	ClassMetrics pm = cmap.getMetrics(super_name);
 
-    pm.incNoc();
-    cm.setParent(pm);
-    registerCoupling(super_name);
-    String ifs[] = clazz.getInterfaceNames();
-    /* Measuring decision: couple interfaces */
-    for (int i = 0; i < ifs.length; i++)
+	pm.incNoc();
+	cm.setParent(pm);
+	registerCoupling(super_name);
+
+	String ifs[] = jc.getInterfaceNames();
+	/* Measuring decision: couple interfaces */
+	for (int i = 0; i < ifs.length; i++)
 	    registerCoupling(ifs[i]);
 
-    Field[] fields = clazz.getFields();
+	Field[] fields = jc.getFields();
+	for(int i=0; i < fields.length; i++)
+	    fields[i].accept(this);
 
-      for(int i=0; i < fields.length; i++)
-	fields[i].accept(this);
-
-    Method[] methods = clazz.getMethods();
-
-    for(int i=0; i < methods.length; i++)
-      methods[i].accept(this);
-  }
-
-  /* Add a given class to the classes we are coupled to */
-  public void registerCoupling(String className) {
-        /* Measuring decision: don't couple to Java SDK */
-	if (!ClassMetrics.isJdkClass(className))
-		coupledClasses.add(className);
-  }
-
-  /* Add the type's class to the classes we are coupled to */
-  public void registerCoupling(Type t) {
-  	registerCoupling(className(t));
-  }
-
-  /* Add a given class to the classes we are coupled to */
-  void registerFieldAccess(String className, String fieldName) {
-  	registerCoupling(className);
-	if (className.equals(myClassName))
-		mi.get(mi.size() - 1).add(fieldName);
-  }
-
-  /* Add a given method to our response set */
-  void registerMethodInvocation(String className, String methodName) {
-  	registerCoupling(className);
-    /* Measuring decision: calls to JDK methods are included in the RFC calculation */
-  	responseSet.add(className + "." + methodName);
-  }
-
-  public void visitField(Field field) {
-    registerCoupling(field.getType());
-  }
-
-  public void visitMethod(Method method) {
-    MethodGen mg = new MethodGen(method, _clazz.getClassName(), _cp);
-
-    Type   result_type = mg.getReturnType();
-    Type[] arg_types   = mg.getArgumentTypes();
-
-    registerCoupling(mg.getReturnType());
-    for (int i = 0; i < arg_types.length; i++)
-	    registerCoupling(arg_types[i]);
-    cm.incWmc();
-    mi.add(new TreeSet<String>());
-    MethodVisitor factory = new MethodVisitor(mg, this);
-    factory.start();
-  }
-
-  /** Return a class name associated with a type */
-  static String className(Type t) {
-    String ts = t.toString();
-
-    if (t.getType() <= Constants.T_VOID) {
-      return "java.PRIMITIVE";
-    } else if(t instanceof ArrayType) {
-      ArrayType at = (ArrayType)t;
-      return className(at.getBasicType());
-    } else {
-      return t.toString();
+	Method[] methods = jc.getMethods();
+	for(int i=0; i < methods.length; i++)
+	    methods[i].accept(this);
     }
-  }
 
-  /** Do final accounting at the end of the visit */
-  public void end() {
-  	cm.setCbo(coupledClasses.size());
-  	cm.setRfc(responseSet.size());
+    /** Add a given class to the classes we are coupled to */
+    public void registerCoupling(String className) {
+	/* Measuring decision: don't couple to Java SDK */
+	if (!ClassMetrics.isJdkClass(className))
+	    coupledClasses.add(className);
+    }
+
+    /* Add the type's class to the classes we are coupled to */
+    public void registerCoupling(Type t) {
+	registerCoupling(className(t));
+    }
+
+    /* Add a given class to the classes we are coupled to */
+    void registerFieldAccess(String className, String fieldName) {
+	registerCoupling(className);
+	if (className.equals(myClassName))
+	    mi.get(mi.size() - 1).add(fieldName);
+    }
+
+    /* Add a given method to our response set */
+    void registerMethodInvocation(String className, String methodName) {
+	registerCoupling(className);
+	/* Measuring decision: calls to JDK methods are included in the RFC calculation */
+	responseSet.add(className + "." + methodName);
+    }
+
+    /** Called when a field access is encountered. */
+    public void visitField(Field field) {
+	registerCoupling(field.getType());
+    }
+
+    /** Called when a method invocation is encountered. */
+    public void visitMethod(Method method) {
+	MethodGen mg = new MethodGen(method, visitedClass.getClassName(), cp);
+
+	Type   result_type = mg.getReturnType();
+	Type[] arg_types   = mg.getArgumentTypes();
+
+	registerCoupling(mg.getReturnType());
+	for (int i = 0; i < arg_types.length; i++)
+	    registerCoupling(arg_types[i]);
+	cm.incWmc();
+	mi.add(new TreeSet<String>());
+	MethodVisitor factory = new MethodVisitor(mg, this);
+	factory.start();
+    }
+
+    /** Return a class name associated with a type. */
+    static String className(Type t) {
+	String ts = t.toString();
+
+	if (t.getType() <= Constants.T_VOID) {
+	    return "java.PRIMITIVE";
+	} else if(t instanceof ArrayType) {
+	    ArrayType at = (ArrayType)t;
+	    return className(at.getBasicType());
+	} else {
+	    return t.toString();
+	}
+    }
+
+    /** Do final accounting at the end of the visit. */
+    public void end() {
+	cm.setCbo(coupledClasses.size());
+	cm.setRfc(responseSet.size());
 	/*
 	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
 	 * where
@@ -162,15 +171,15 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	 */
 	int lcom = 0;
 	for (int i = 0; i < mi.size(); i++)
-		for (int j = i + 1; j < mi.size(); j++) {
-			/* A shallow unknown-type copy is enough */
-			TreeSet<?> intersection = (TreeSet<?>)mi.get(i).clone();
-			intersection.retainAll(mi.get(j));
-			if (intersection.size() == 0)
-				lcom++;
-			else
-				lcom--;
-		}
+	    for (int j = i + 1; j < mi.size(); j++) {
+		/* A shallow unknown-type copy is enough */
+		TreeSet<?> intersection = (TreeSet<?>)mi.get(i).clone();
+		intersection.retainAll(mi.get(j));
+		if (intersection.size() == 0)
+		    lcom++;
+		else
+		    lcom--;
+	    }
 	cm.setLcom(lcom > 0 ? lcom : 0);
-  }
+    }
 }

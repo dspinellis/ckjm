@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetricsContainer.java,v 1.5 2005/02/18 19:35:48 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetricsContainer.java,v 1.6 2005/02/19 07:37:24 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -20,8 +20,14 @@ import java.util.*;
 import java.io.*;
 
 
-/** A container of class metrics
- * @version $Revision: 1.5 $
+/**
+ * A container of class metrics mapping class names to their metrics.
+ * This class contains the the metrics for all class's during the filter's
+ * operation.  Some metrics need to be updated as the program processes
+ * other classes, so the class's metrics will be recovered from this
+ * container to be updated.
+ *
+ * @version $Revision: 1.6 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class ClassMetricsContainer {
@@ -39,18 +45,16 @@ class ClassMetricsContainer {
 	return cm;
     }
 
-    /** Print the metrics of all classes */
+    /** Print the metrics of all the visited classes. */
     public void printMetrics(PrintStream out) {
 	Set<Map.Entry<String, ClassMetrics>> entries = m.entrySet();
 	Iterator<Map.Entry<String, ClassMetrics>> i;
 
 	for (i = entries.iterator(); i.hasNext(); ) {
 	    Map.Entry<String, ClassMetrics> e = i.next();
-	    if (!ClassMetrics.isJdkClass(e.getKey())) {
-		ClassMetrics cm = e.getValue();
-		if (cm.isVisited())
-		    out.println(e.getKey() + " " + cm);
-	    }
+	    ClassMetrics cm = e.getValue();
+	    if (cm.isVisited())
+		out.println(e.getKey() + " " + cm);
 	}
     }
 }
