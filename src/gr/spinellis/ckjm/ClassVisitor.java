@@ -8,16 +8,13 @@ import org.apache.bcel.util.*;
 import java.io.*;
 import java.util.*;
 
-/** 
- * This class takes a given JavaClass object and converts it to a
- * Java program that creates that very class using BCEL. This
- * gives new users of BCEL a useful example showing how things
- * are done with BCEL. It does not cover all features of BCEL,
- * but tries to mimic hand-written code as close as possible.
+/**
+ * Visit a class calculating its Chidamber-Kemerer metrics.
  *
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.3 2005/02/18 07:32:37 dds Exp $
- * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A> 
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.4 2005/02/18 08:03:15 dds Exp $
+ * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
+
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   private JavaClass         _clazz;
   private PrintWriter       _out;
@@ -63,6 +60,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 					     false, true);
     ClassMetrics pm = cmap.getMetrics(super_name);
 
+    registerCoupling(super_name);
     pm.incNoc();
     cm.setParent(pm);
 
@@ -90,8 +88,9 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
   }
 
   /* Add a given class to the classes we are coupled to */
-  private void registerCoupling(String classname) {
-  	coupledClasses.add(classname);
+  private void registerCoupling(String className) {
+	System.out.println("Coupling to " + className);
+  	coupledClasses.add(className);
   }
 
   /* Add a given class to the classes we are coupled to */
@@ -109,6 +108,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
   public void visitField(Field field) {
     _out.println("field " + field.getName() + "\n");
+    registerCoupling(className(field.getType()));
   }
 
   public void visitMethod(Method method) {
@@ -117,6 +117,9 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     Type   result_type = mg.getReturnType();
     Type[] arg_types   = mg.getArgumentTypes();
 
+    registerCoupling(className(mg.getReturnType()));
+    for (int i = 0; i < arg_types.length; i++)
+	    registerCoupling(className(arg_types[i]));
     _out.println("    MethodGen method = new MethodGen(" +
 		 printFlags(method.getAccessFlags()) +
 		 ", " + printType(result_type) +
@@ -175,6 +178,20 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
   static String printType(Type type) {
     return printType(type.getSignature());
+  }
+
+  /** Return a class name associated with a type */
+  static String className(Type t) {
+    String ts = t.toString();
+
+    if (t.getType() <= Constants.T_VOID) {
+      return "java.PRIMITIVE";
+    } else if(t instanceof ArrayType) {
+      ArrayType at = (ArrayType)t;
+      return className(at.getBasicType());
+    } else {
+      return t.toString();
+    }
   }
 
   static String printType(String signature) {
