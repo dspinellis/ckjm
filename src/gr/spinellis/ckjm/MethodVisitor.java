@@ -12,23 +12,28 @@ import java.util.*;
  * A helper class for ClassVisitor.
  *
  * @see ClassVisitor
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.2 2005/02/17 16:52:12 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.3 2005/02/18 07:30:47 dds Exp $
  * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  */
 class MethodVisitor extends EmptyVisitor {
   private MethodGen       _mg;
   private PrintWriter     _out;
   private ConstantPoolGen _cp;
+  private ClassVisitor    cv;
+  private ClassMetrics    cm;
 
-  MethodVisitor(MethodGen mg, PrintWriter out) {
+  MethodVisitor(MethodGen mg, ClassVisitor c, PrintWriter out) {
     _mg  = mg;
+    cv = c;
     _cp  = mg.getConstantPool();
     _out = out;
+    cm = cv.getMetrics();
   }
 
   private HashMap branch_map = new HashMap(); // Map<Instruction, InstructionHandle>
 
   public void start() {
+
     if(!_mg.isAbstract() && !_mg.isNative()) {
       for(InstructionHandle ih = _mg.getInstructionList().getStart();
 	  ih != null; ih = ih.getNext()) {
@@ -102,6 +107,7 @@ class MethodVisitor extends EmptyVisitor {
     String field_name = i.getFieldName(_cp);
     Type   type       = i.getFieldType(_cp);
 
+    cv.registerFieldAccess(class_name, field_name);
     _out.println("il.append(_factory.createFieldAccess(\"" +
 		 class_name + "\", \"" + field_name + "\", " +
 		 ClassVisitor.printType(type) + ", " +
@@ -116,6 +122,8 @@ class MethodVisitor extends EmptyVisitor {
     Type   type        = i.getReturnType(_cp);
     Type[] arg_types   = i.getArgumentTypes(_cp);
 
+    /* We don't handle method overloading */
+    cv.registerMethodInvocation(class_name, method_name);
     _out.println("il.append(_factory.createInvoke(\"" +
 		 class_name + "\", \"" + method_name + "\", " +
 		 ClassVisitor.printType(type) + ", " +
