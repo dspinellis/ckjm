@@ -14,7 +14,7 @@ import java.io.*;
  * are done with BCEL. It does not cover all features of BCEL,
  * but tries to mimic hand-written code as close as possible.
  *
- * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.1 2005/02/17 09:40:39 dds Exp $
+ * @version $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.2 2005/02/17 09:44:06 dds Exp $
  * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A> 
  */
 public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
@@ -59,24 +59,13 @@ public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
 		 printFlags(clazz.getAccessFlags(), true) + ", " +
 		 "new String[] { " + inter + " });\n");
 
-    _out.println("    _cp = _cg.getConstantPool();");
-    _out.println("    _factory = new InstructionFactory(_cg, _cp);");
-    _out.println("  }\n");
-
     printCreate();
 
     Field[] fields = clazz.getFields();
 
-    if(fields.length > 0) {
-      _out.println("  private void createFields() {");   
-      _out.println("    FieldGen field;");
-
       for(int i=0; i < fields.length; i++) {
 	fields[i].accept(this);
       }
-
-      _out.println("  }\n");   
-    }
 
     Method[] methods = clazz.getMethods();
 
@@ -87,38 +76,16 @@ public class TextUi extends org.apache.bcel.classfile.EmptyVisitor {
       _out.println("  }\n");   
     }
 
-    printMain();
-    _out.println("}");
   }
   
   private void printCreate() {
     _out.println("  public void create(OutputStream out) throws IOException {");
 
     Field[] fields = _clazz.getFields();
-    if(fields.length > 0) {
-      _out.println("    createFields();");   
-    }
 
     Method[] methods = _clazz.getMethods();
-    for(int i=0; i < methods.length; i++) {
-      _out.println("    createMethod_" + i + "();");   
-    }
-
-    _out.println("    _cg.getJavaClass().dump(out);");   
-  
-    _out.println("  }\n");     
   }
 
-  private void printMain() {
-    String   class_name   = _clazz.getClassName();
-    
-    _out.println("  public static void main(String[] args) throws Exception {");
-    _out.println("    " + class_name + "Creator creator = new " +
-		 class_name + "Creator();");
-    _out.println("    creator.create(new FileOutputStream(\"" + class_name +
-		 ".class\"));");
-    _out.println("  }");     
-  }
 
   public void visitField(Field field) {
     _out.println("\n    field = new FieldGen(" +
