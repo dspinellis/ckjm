@@ -1,7 +1,7 @@
 <project name="ckjm" default="compile" basedir=".">
 <description>
 	The specification for all ckjm build processes.
-	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.2 2005/02/21 17:36:39 dds Exp $
+	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.3 2005/05/11 20:58:37 dds Exp $
 </description>
 
 <!-- set global properties for this build -->
@@ -22,7 +22,7 @@
 
 <target name="compile" depends="init"
 	description="compile the source, build library " >
-	<javac srcdir="${src}" destdir="${build}/classes" classpath="lib/bcel-5.1.jar" excludes="RCS/*">
+	<javac srcdir="${src}" destdir="${build}/classes" classpath="lib/bcel-5.1.jar" excludes="RCS/*,ant/RCS/*">
 		<compilerarg value="-Xlint:unchecked"/>
 	</javac>
 	<copy file="lib/bcel-5.1.jar"
