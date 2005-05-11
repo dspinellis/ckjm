@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.6 2005/02/19 07:37:24 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.7 2005/05/11 20:04:08 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -23,10 +23,10 @@ package gr.spinellis.ckjm;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
-class ClassMetrics {
+public class ClassMetrics {
     /** Weighted methods per class */
     private int wmc;
     /** Number of children */
