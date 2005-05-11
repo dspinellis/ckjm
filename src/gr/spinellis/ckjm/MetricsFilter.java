@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.6 2005/02/19 07:37:24 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.7 2005/05/11 20:25:54 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -34,7 +34,7 @@ import java.util.*;
  * WMC, DIT, NOC, CBO, RFC, LCOM
  *
  * @see ClassMetrics
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {
@@ -69,6 +69,21 @@ public class MetricsFilter {
 	}
     }
 
+    /**
+     * The interface for other Java based applications.
+     * Implement the outputhandler to catch the results
+     *
+     * @param files Class files to be analyzed
+     * @param outputHandler An implementation of the CkjmOutputHandler interface
+     */
+    public static void runMetrics(String[] files, CkjmOutputHandler outputHandler) {
+        ClassMetricsContainer cm = new ClassMetricsContainer();
+
+        for (int i = 0; i < files.length; i++)
+            processClass(cm, files[i]);
+        cm.printMetrics(outputHandler);
+    }
+
     /** The filter's main body.
      * Process command line arguments and the standard input.
      */
@@ -90,6 +105,7 @@ public class MetricsFilter {
 	for (int i = 0; i < argv.length; i++)
 	    processClass(cm, argv[i]);
 
-	cm.printMetrics(System.out);
+	CkjmOutputHandler handler = new PrintPlainResults(System.out);
+	cm.printMetrics(handler);
     }
 }
