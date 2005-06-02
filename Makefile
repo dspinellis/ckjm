@@ -1,8 +1,8 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.3 2005/05/11 21:27:06 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.4 2005/06/02 15:57:45 dds Exp $
 #
 
-VERSION=1.2
+VERSION=1.3
 TARBALL=ckjm-$(VERSION).tar.gz
 ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
