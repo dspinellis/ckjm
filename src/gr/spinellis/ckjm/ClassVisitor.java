@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.11 2005/04/17 06:39:20 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.12 2005/06/02 16:03:10 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -28,7 +28,7 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -47,7 +47,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
      */
     private HashSet<String> coupledClasses = new HashSet<String>();
     /** Methods encountered.
-     * Its cardinality is used for calculating the WMC.
+     * Its cardinality is used for calculating the RFC.
      */
     private HashSet<String> responseSet = new HashSet<String>();
     /** Use of fields in methods.
@@ -137,6 +137,8 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
     /** Called when a method invocation is encountered. */
     public void visitMethod(Method method) {
+	/* Measuring decision: A class's own methods contribute to its RFC */
+	responseSet.add(visitedClass.getClassName() + "." + method.getName());
 	MethodGen mg = new MethodGen(method, visitedClass.getClassName(), cp);
 
 	Type   result_type = mg.getReturnType();
