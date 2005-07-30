@@ -1,5 +1,5 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.5 2005/07/30 14:17:36 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.6 2005/07/30 14:19:05 dds Exp $
 #
 
 VERSION=1.4
@@ -17,7 +17,7 @@ all: antcompile
 antcompile:
 	ant -Dversion=$(VERSION)
 
-$(EGHTML):
+$(EGHTML): Makefile
 	ant -Dversion=$(VERSION) html
 
 $(TARBALL): docs Makefile
