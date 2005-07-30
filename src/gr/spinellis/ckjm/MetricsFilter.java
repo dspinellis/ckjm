@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.7 2005/05/11 20:25:54 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.8 2005/07/30 13:41:40 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -34,10 +34,16 @@ import java.util.*;
  * WMC, DIT, NOC, CBO, RFC, LCOM
  *
  * @see ClassMetrics
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {
+    /** True if the measurements should include calls to the Java JDK into account */
+    private static boolean includeJdk = false;
+
+    /** Return true if the measurements should include calls to the Java JDK into account */
+    public static boolean isJdkIncluded() { return includeJdk; }
+
     /**
      * Load and parse the specified class.
      * The class specification can be either a class file name, or
@@ -88,9 +94,15 @@ public class MetricsFilter {
      * Process command line arguments and the standard input.
      */
     public static void main(String[] argv) {
+	int argp = 0;
+
+	if (argv.length > argp && argv[argp].equals("-s")) {
+	    includeJdk = true;
+	    argp++;
+	}
 	ClassMetricsContainer cm = new ClassMetricsContainer();
 
-	if (argv.length == 0) {
+	if (argv.length == argp) {
 	    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	    try {
 		String s;
@@ -102,7 +114,7 @@ public class MetricsFilter {
 	    }
 	}
 
-	for (int i = 0; i < argv.length; i++)
+	for (int i = argp; i < argv.length; i++)
 	    processClass(cm, argv[i]);
 
 	CkjmOutputHandler handler = new PrintPlainResults(System.out);
