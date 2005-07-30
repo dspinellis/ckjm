@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.7 2005/05/11 20:04:08 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.8 2005/07/30 13:41:55 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -16,6 +16,8 @@
 
 package gr.spinellis.ckjm;
 
+import java.util.HashSet;
+
 /**
  * Store details needed for calculating a class's Chidamber-Kemerer metrics.
  * Most fields in this class are set by ClassVisitor.
@@ -23,7 +25,7 @@ package gr.spinellis.ckjm;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassMetrics {
@@ -41,6 +43,8 @@ public class ClassMetrics {
     private int lcom;
     /** True if the class has been visited by the metrics gatherer */
     private boolean visited;
+    /** Coupled classes: classes that use this class */
+    private HashSet<String> efferentCoupledClasses;
 
     /** Default constructor. */
     ClassMetrics() {
@@ -49,6 +53,7 @@ public class ClassMetrics {
 	cbo = 0;
 	parent = null;
 	visited = false;
+	efferentCoupledClasses = new HashSet<String>();
     }
 
     /** Increment the weighted methods count */
@@ -91,6 +96,11 @@ public class ClassMetrics {
     /** Set the class's lack of cohesion in methods metric */
     public void setLcom(int l) { lcom = l; }
 
+    /** Return the class's efferent couplings metric */
+    public int getCe() { return efferentCoupledClasses.size(); }
+    /** Add a class to the set of classes that depend on this class */
+    public void addEfferentCoupling(String name) { efferentCoupledClasses.add(name); }
+
     /** Return true if the class name is part of the Java SDK */
     public static boolean isJdkClass(String s) {
 	return (s.startsWith("java.") ||
@@ -100,7 +110,7 @@ public class ClassMetrics {
 		s.startsWith("org.xml.sax."));
     }
 
-    /** Return the 6 CK metrics as a space-separated string */
+    /** Return the 6 CK metrics plus Ce as a space-separated string */
     public String toString() {
 	return (
 		wmc +
@@ -108,7 +118,8 @@ public class ClassMetrics {
 		" " + noc +
 		" " + cbo +
 		" " + rfc +
-		" " + lcom);
+		" " + lcom +
+		" " + getCe());
     }
 
     /** Mark the instance as visited by the metrics analyzer */

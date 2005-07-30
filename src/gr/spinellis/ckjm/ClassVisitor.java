@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.12 2005/06/02 16:03:10 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.13 2005/07/30 13:41:55 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -28,7 +28,7 @@ import java.util.*;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -45,7 +45,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     /* Classes encountered.
      * Its cardinality is used for calculating the CBO.
      */
-    private HashSet<String> coupledClasses = new HashSet<String>();
+    private HashSet<String> afferentCoupledClasses = new HashSet<String>();
     /** Methods encountered.
      * Its cardinality is used for calculating the RFC.
      */
@@ -107,8 +107,12 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     /** Add a given class to the classes we are coupled to */
     public void registerCoupling(String className) {
 	/* Measuring decision: don't couple to Java SDK */
-	if (!ClassMetrics.isJdkClass(className))
-	    coupledClasses.add(className);
+	if ((MetricsFilter.isJdkIncluded() ||
+	     !ClassMetrics.isJdkClass(className)) &&
+	    !myClassName.equals(className)) {
+	    afferentCoupledClasses.add(className);
+	    cmap.getMetrics(className).addEfferentCoupling(myClassName);
+	}
     }
 
     /* Add the type's class to the classes we are coupled to */
@@ -169,7 +173,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
     /** Do final accounting at the end of the visit. */
     public void end() {
-	cm.setCbo(coupledClasses.size());
+	cm.setCbo(afferentCoupledClasses.size());
 	cm.setRfc(responseSet.size());
 	/*
 	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
