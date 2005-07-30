@@ -4,7 +4,7 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <!-- No not edit this page in the web directory. -->
-<!-- $Id: \\dds\\src\\Research\\ckjm.RCS\\index.html,v 1.6 2005/05/11 21:27:06 dds Exp $ -->
+<!-- $Id: \\dds\\src\\Research\\ckjm.RCS\\index.html,v 1.7 2005/07/30 14:26:54 dds Exp $ -->
 <head>
 <title>ckjm &mdash; Chidamber and Kemerer Java Metrics</title>
 <meta name="AUTHOR" content="Diomidis Spinellis" />
@@ -17,7 +17,8 @@
 <img src="smallpic.jpg" alt="Picture of the Java book, the metrics paper, and a measure tape" align="right" hspace="20" />
 The program <em>ckjm</em> calculates Chidamber and Kemerer object-oriented
 metrics by processing the bytecode of compiled Java files.
-The program calculates for each class the following six metrics:
+The program calculates for each class the following six metrics proposed
+by Chidamber and Kemerer.
 </p>
 <ul>
 <li>WMC: Weighted methods per class</li>
@@ -26,6 +27,12 @@ The program calculates for each class the following six metrics:
 <li>CBO: Coupling between object classes</li>
 <li>RFC: Response for a Class</li>
 <li>LCOM: Lack of cohesion in methods</li>
+</ul>
+<p>
+In addition it also calculates for each class
+</p>
+<ul>
+<li>Ce: Efferent couplings</li>
 </ul>
 <p>
 I wrote this program out of frustration over the
@@ -106,7 +113,7 @@ and the complete documentation in HTML format).
 May be freely uploaded by WWW viewers and similar programs.
 All other rights reserved.
 <br />
-Last modified: $Date: 2005/05/11 21:27:06 $
+Last modified: $Date: 2005/07/30 14:26:54 $
 </font>
 </td></tr>
 </table>
