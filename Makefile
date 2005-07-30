@@ -1,20 +1,24 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.4 2005/06/02 15:57:45 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.5 2005/07/30 14:17:36 dds Exp $
 #
 
-VERSION=1.3
+VERSION=1.4
 TARBALL=ckjm-$(VERSION).tar.gz
 ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
 WEBDIR=/dds/pubs/web/home/sw/ckjm
 SRCFILE=README.txt LICENSE.txt build.xml src/*.java src/ant/*.java xsl/*.xsl
 BCEL=bcel-5.1.jar
-ART=smallpic.jpg output_simple.html output_extra.html
+EGHTML=output_simple.html output_extra.html
+ART=smallpic.jpg
 
 all: antcompile
 
 antcompile:
 	ant -Dversion=$(VERSION)
+
+$(EGHTML):
+	ant -Dversion=$(VERSION) html
 
 $(TARBALL): docs Makefile
 	-cmd /c rd /s/q $(DISTDIR)
@@ -36,6 +40,6 @@ docs:
 	#rm $(WEBDIR)/doc/*
 	(cd doc && make)
 
-web: $(TARBALL)
-	cp $(ART) $(TARBALL) $(ZIPBALL) $(WEBDIR)
+web: $(TARBALL) $(EGHTML)
+	cp $(ART) $(EGHTML) $(TARBALL) $(ZIPBALL) $(WEBDIR)
 	sed "s/VERSION/$(VERSION)/g" index.html >$(WEBDIR)/index.html
