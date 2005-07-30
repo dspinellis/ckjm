@@ -12,7 +12,7 @@
  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
- $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.1 2005/05/11 21:14:18 dds Exp $
+ $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.2 2005/07/30 14:17:26 dds Exp $
 
 -->
 
@@ -100,6 +100,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -114,6 +115,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:for-each select="ckjm/class">
 <xsl:sort select="name" data-type="text" order="ascending"/>
@@ -125,6 +127,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <td><xsl:value-of select="rfc"/></td>
   <td><xsl:value-of select="dit"/></td>
   <td><xsl:value-of select="noc"/></td>
+  <td><xsl:value-of select="ce"/></td>
 </tr>
 </xsl:for-each>
 </table>
@@ -144,6 +147,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">noc</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -158,6 +162,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:apply-templates select="ckjm/class">
 <xsl:sort select="wmc" data-type="number" order="descending"/>
@@ -179,6 +184,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -193,6 +199,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:apply-templates select="ckjm/class">
 <xsl:sort select="cbo" data-type="number" order="descending"/>
@@ -214,6 +221,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -228,6 +236,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:apply-templates select="ckjm/class">
 <xsl:sort select="lcom" data-type="number" order="descending"/>
@@ -249,6 +258,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -263,6 +273,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:apply-templates select="ckjm/class">
 <xsl:sort select="rfc" data-type="number" order="descending"/>
@@ -284,6 +295,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -298,6 +310,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:apply-templates select="ckjm/class">
 <xsl:sort select="dit" data-type="number" order="descending"/>
@@ -319,6 +332,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -333,9 +347,47 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:apply-templates select="ckjm/class">
 <xsl:sort select="noc" data-type="number" order="descending"/>
+</xsl:apply-templates>
+</table>
+
+<table>
+<tr>
+  <td>
+    <a name="NVce">
+      <h2>Top <xsl:value-of select="$top"/> Efferent Couplings (Ce)</h2>
+    </a>
+  </td>
+  <td align="right">
+    [<a href="#NVsummary">summary</a>]
+    [<a href="#NVwmc">wmc</a>]
+    [<a href="#NVcbo">cbo</a>]
+    [<a href="#NVlcom">lcom</a>]
+    [<a href="#NVrfc">rfc</a>]
+    [<a href="#NVdit">dit</a>]
+    [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
+    [<a href="#NVexplanations">explanations</a>]
+  </td>
+</tr>
+</table>
+
+<table class="details">
+<tr>
+  <th>Class</th>
+  <th>WMC</th>
+  <th>CBO</th>
+  <th>LCOM</th>
+  <th>RFC</th>
+  <th>DIT</th>
+  <th>NOC</th>
+  <th>Ce</th>
+</tr>
+<xsl:apply-templates select="ckjm/class">
+<xsl:sort select="ce" data-type="number" order="descending"/>
 </xsl:apply-templates>
 </table>
 
@@ -354,6 +406,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     [<a href="#NVrfc">rfc</a>]
     [<a href="#NVdit">dit</a>]
     [<a href="#NVnoc">noc</a>]
+    [<a href="#NVce">ce</a>]
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -427,6 +480,11 @@ Others modified the definition of connectedness to
 include calls between the methods of the class.
 The program <em>ckjm</em> follows the original (1994) definition
 by Chidamber and Kemerer.
+</dd><dt>Ce - Efferent couplings</dt><dd>
+A class's efferent couplings is a measure of how many other classes
+use the specific class.
+Ce is calculated using the same definition as that used for
+calculating CBO.
 </dd>
 </dl>
 
@@ -444,6 +502,7 @@ by Chidamber and Kemerer.
   <td><xsl:value-of select="rfc"/></td>
   <td><xsl:value-of select="dit"/></td>
   <td><xsl:value-of select="noc"/></td>
+  <td><xsl:value-of select="ce"/></td>
 </tr>
 </xsl:if>
 </xsl:template>

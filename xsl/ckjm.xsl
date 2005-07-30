@@ -12,7 +12,7 @@
  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
- $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm.xsl,v 1.1 2005/05/11 21:14:18 dds Exp $
+ $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm.xsl,v 1.2 2005/07/30 14:17:26 dds Exp $
 
 -->
 
@@ -75,6 +75,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <th>RFC</th>
   <th>DIT</th>
   <th>NOC</th>
+  <th>Ce</th>
 </tr>
 <xsl:for-each select="ckjm/class">
 <xsl:sort select="name" data-type="text" order="ascending"/>
@@ -86,6 +87,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <td><xsl:value-of select="rfc"/></td>
   <td><xsl:value-of select="dit"/></td>
   <td><xsl:value-of select="noc"/></td>
+  <td><xsl:value-of select="ce"/></td>
 </tr>
 </xsl:for-each>
 </table>
