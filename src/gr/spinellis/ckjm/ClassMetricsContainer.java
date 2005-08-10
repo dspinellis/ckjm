@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetricsContainer.java,v 1.8 2005/08/10 16:42:28 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetricsContainer.java,v 1.9 2005/08/10 16:53:36 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -28,7 +28,7 @@ import java.io.*;
  * other classes, so the class's metrics will be recovered from this
  * container to be updated.
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class ClassMetricsContainer {
@@ -54,7 +54,7 @@ class ClassMetricsContainer {
 	for (i = entries.iterator(); i.hasNext(); ) {
 	    Map.Entry<String, ClassMetrics> e = i.next();
 	    ClassMetrics cm = e.getValue();
-	    if (cm.isVisited())
+	    if (cm.isVisited() && (MetricsFilter.includeAll() || cm.isPublic()))
 		handler.handleClass(e.getKey(), cm);
 	}
     }

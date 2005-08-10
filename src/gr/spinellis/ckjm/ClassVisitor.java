@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.14 2005/08/10 16:42:28 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.15 2005/08/10 16:53:36 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -29,7 +29,7 @@ import java.lang.reflect.Modifier;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -79,6 +79,8 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	String package_name = jc.getPackageName();
 
 	cm.setVisited();
+	if (jc.isPublic())
+		cm.setPublic();
 	ClassMetrics pm = cmap.getMetrics(super_name);
 
 	pm.incNoc();

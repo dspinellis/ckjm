@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.8 2005/07/30 13:41:40 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MetricsFilter.java,v 1.9 2005/08/10 16:53:36 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -34,15 +34,20 @@ import java.util.*;
  * WMC, DIT, NOC, CBO, RFC, LCOM
  *
  * @see ClassMetrics
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class MetricsFilter {
     /** True if the measurements should include calls to the Java JDK into account */
     private static boolean includeJdk = false;
 
+    /** True if the reports should only include public classes */
+    private static boolean onlyPublic = false;
+
     /** Return true if the measurements should include calls to the Java JDK into account */
     public static boolean isJdkIncluded() { return includeJdk; }
+    /** Return true if the measurements should include all classes */
+    public static boolean includeAll() { return !onlyPublic; }
 
     /**
      * Load and parse the specified class.
@@ -98,6 +103,10 @@ public class MetricsFilter {
 
 	if (argv.length > argp && argv[argp].equals("-s")) {
 	    includeJdk = true;
+	    argp++;
+	}
+	if (argv.length > argp && argv[argp].equals("-p")) {
+	    onlyPublic = true;
 	    argp++;
 	}
 	ClassMetricsContainer cm = new ClassMetricsContainer();

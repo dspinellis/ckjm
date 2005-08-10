@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.9 2005/08/10 16:42:28 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.10 2005/08/10 16:53:36 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -25,7 +25,7 @@ import java.util.HashSet;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassMetrics {
@@ -46,7 +46,7 @@ public class ClassMetrics {
     /** True if the class has been visited by the metrics gatherer */
     private boolean visited;
     /** True if the class is public */
-    private boolean isPublic;
+    private boolean isPublicClass;
     /** Coupled classes: classes that use this class */
     private HashSet<String> efferentCoupledClasses;
 
@@ -110,8 +110,13 @@ public class ClassMetrics {
     public void incNpm() { npm++; }
     /** Return the number of public methods metric */
     public int getNpm() { return npm; }
-    /** Return true if the class name is part of the Java SDK */
 
+    /** Return true if the class is public */
+    public boolean isPublic() { return isPublicClass; }
+    /** Call to set the class as public */
+    public void setPublic() { isPublicClass = true; }
+
+    /** Return true if the class name is part of the Java SDK */
     public static boolean isJdkClass(String s) {
 	return (s.startsWith("java.") ||
 		s.startsWith("javax.") ||
@@ -138,7 +143,7 @@ public class ClassMetrics {
     /**
      * Return true if the class has been visited by the metrics analyzer.
      * Classes may appear in the collection as a result of some kind
-     * of coupling.  However, unless they are visited an analyzed,
+     * of coupling.  However, unless they are visited and analyzed,
      * we do not want them to appear in the output results.
      */
     public boolean isVisited() { return visited; }
