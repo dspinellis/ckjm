@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ant\\PrintXmlResults.java,v 1.2 2005/07/30 13:42:44 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ant\\PrintXmlResults.java,v 1.3 2005/08/10 16:43:01 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis, Julien Rentrop
  *
@@ -46,6 +46,7 @@ public class PrintXmlResults implements CkjmOutputHandler {
                 "<rfc>" + c.getRfc() + "</rfc>\n" +
                 "<lcom>" + c.getLcom() + "</lcom>\n" +
                 "<ce>" + c.getCe() + "</ce>\n" +
+                "<npm>" + c.getNpm() + "</npm>\n" +
                 "</class>\n");
     }
 

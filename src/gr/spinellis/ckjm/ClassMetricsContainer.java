@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetricsContainer.java,v 1.7 2005/05/11 20:14:10 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetricsContainer.java,v 1.8 2005/08/10 16:42:28 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -16,6 +16,7 @@
 
 package gr.spinellis.ckjm;
 
+import org.apache.bcel.classfile.*;
 import java.util.*;
 import java.io.*;
 
@@ -27,7 +28,7 @@ import java.io.*;
  * other classes, so the class's metrics will be recovered from this
  * container to be updated.
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class ClassMetricsContainer {

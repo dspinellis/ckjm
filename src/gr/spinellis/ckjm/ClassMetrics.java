@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.8 2005/07/30 13:41:55 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.9 2005/08/10 16:42:28 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -25,7 +25,7 @@ import java.util.HashSet;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassMetrics {
@@ -41,8 +41,12 @@ public class ClassMetrics {
     private int cbo;
     /** Lack of cohesion in methods */
     private int lcom;
+    /** Number of public methods */
+    private int npm;
     /** True if the class has been visited by the metrics gatherer */
     private boolean visited;
+    /** True if the class is public */
+    private boolean isPublic;
     /** Coupled classes: classes that use this class */
     private HashSet<String> efferentCoupledClasses;
 
@@ -51,6 +55,7 @@ public class ClassMetrics {
 	wmc = 0;
 	noc = 0;
 	cbo = 0;
+	npm = 0;
 	parent = null;
 	visited = false;
 	efferentCoupledClasses = new HashSet<String>();
@@ -101,7 +106,12 @@ public class ClassMetrics {
     /** Add a class to the set of classes that depend on this class */
     public void addEfferentCoupling(String name) { efferentCoupledClasses.add(name); }
 
+    /** Increment the number of public methods count */
+    public void incNpm() { npm++; }
+    /** Return the number of public methods metric */
+    public int getNpm() { return npm; }
     /** Return true if the class name is part of the Java SDK */
+
     public static boolean isJdkClass(String s) {
 	return (s.startsWith("java.") ||
 		s.startsWith("javax.") ||
@@ -119,7 +129,8 @@ public class ClassMetrics {
 		" " + cbo +
 		" " + rfc +
 		" " + lcom +
-		" " + getCe());
+		" " + getCe()+
+		" " + npm);
     }
 
     /** Mark the instance as visited by the metrics analyzer */

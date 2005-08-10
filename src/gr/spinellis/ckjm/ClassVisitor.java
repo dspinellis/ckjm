@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.13 2005/07/30 13:41:55 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.14 2005/08/10 16:42:28 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -23,12 +23,13 @@ import org.apache.bcel.Constants;
 import org.apache.bcel.util.*;
 import java.io.*;
 import java.util.*;
+import java.lang.reflect.Modifier;
 
 /**
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -152,6 +153,8 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	for (int i = 0; i < arg_types.length; i++)
 	    registerCoupling(arg_types[i]);
 	cm.incWmc();
+	if (Modifier.isPublic(method.getModifiers()))
+		cm.incNpm();
 	mi.add(new TreeSet<String>());
 	MethodVisitor factory = new MethodVisitor(mg, this);
 	factory.start();
