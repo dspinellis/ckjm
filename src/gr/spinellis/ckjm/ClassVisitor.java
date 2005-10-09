@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.16 2005/10/09 13:56:50 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.17 2005/10/09 15:36:08 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -29,7 +29,7 @@ import java.lang.reflect.Modifier;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -80,7 +80,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
 	cm.setVisited();
 	if (jc.isPublic())
-		cm.setPublic();
+	    cm.setPublic();
 	ClassMetrics pm = cmap.getMetrics(super_name);
 
 	pm.incNoc();
@@ -131,10 +131,10 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     }
 
     /* Add a given method to our response set */
-    void registerMethodInvocation(String className, String methodName) {
+    void registerMethodInvocation(String className, String methodName, Type[] args) {
 	registerCoupling(className);
 	/* Measuring decision: calls to JDK methods are included in the RFC calculation */
-	responseSet.add(className + "." + methodName);
+	incRFC(className, methodName, args);
     }
 
     /** Called when a field access is encountered. */
@@ -142,22 +142,33 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	registerCoupling(field.getType());
     }
 
+    /** Called when encountering a method that should be included in the
+        class's RFC. */
+    private void incRFC(String className, String methodName, Type[] arguments) {
+        String argumentList = Arrays.asList(arguments).toString();
+        // remove [ ] chars from begin and end
+        String args = argumentList.substring(1, argumentList.length() - 1);
+        String signature = className + "." + methodName + "(" + args + ")";
+        responseSet.add(signature);
+    }
+
     /** Called when a method invocation is encountered. */
     public void visitMethod(Method method) {
-	/* Measuring decision: A class's own methods contribute to its RFC */
-	responseSet.add(visitedClass.getClassName() + "." + method.getName());
 	MethodGen mg = new MethodGen(method, visitedClass.getClassName(), cp);
 
 	Type   result_type = mg.getReturnType();
-	Type[] arg_types   = mg.getArgumentTypes();
+	Type[] argTypes   = mg.getArgumentTypes();
 
 	registerCoupling(mg.getReturnType());
-	for (int i = 0; i < arg_types.length; i++)
-	    registerCoupling(arg_types[i]);
+	for (int i = 0; i < argTypes.length; i++)
+	    registerCoupling(argTypes[i]);
 
 	String[] exceptions = mg.getExceptions();
 	for (int i = 0; i < exceptions.length; i++)
 	    registerCoupling(exceptions[i]);
+
+	/* Measuring decision: A class's own methods contribute to its RFC */
+	incRFC(myClassName, method.getName(), argTypes);
 
 	cm.incWmc();
 	if (Modifier.isPublic(method.getModifiers()))
@@ -185,6 +196,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     public void end() {
 	cm.setCbo(afferentCoupledClasses.size());
 	cm.setRfc(responseSet.size());
+	System.out.println(myClassName+" RFC:"+responseSet);
 	/*
 	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
 	 * where

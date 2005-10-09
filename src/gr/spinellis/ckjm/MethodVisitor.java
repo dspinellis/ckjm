@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.7 2005/02/19 07:37:24 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\MethodVisitor.java,v 1.8 2005/10/09 15:36:08 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -26,7 +26,7 @@ import java.util.*;
  * A helper class for ClassVisitor.
  *
  * @see ClassVisitor
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 class MethodVisitor extends EmptyVisitor {
@@ -89,12 +89,12 @@ class MethodVisitor extends EmptyVisitor {
 
     /** Method invocation. */
     public void visitInvokeInstruction(InvokeInstruction i) {
-	Type[] arg_types   = i.getArgumentTypes(cp);
-	for (int j = 0; j < arg_types.length; j++)
-	    cv.registerCoupling(arg_types[j]);
+	Type[] argTypes   = i.getArgumentTypes(cp);
+	for (int j = 0; j < argTypes.length; j++)
+	    cv.registerCoupling(argTypes[j]);
 	cv.registerCoupling(i.getReturnType(cp));
-	/* Measuring decision: don't measure overloaded methods separately */
-	cv.registerMethodInvocation(i.getClassName(cp), i.getMethodName(cp));
+	/* Measuring decision: measure overloaded methods separately */
+	cv.registerMethodInvocation(i.getClassName(cp), i.getMethodName(cp), argTypes);
     }
 
     /** Visit an instanceof instruction. */
