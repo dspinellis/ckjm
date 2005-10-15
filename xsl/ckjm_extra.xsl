@@ -12,7 +12,7 @@
  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
- $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.2 2005/07/30 14:17:26 dds Exp $
+ $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.3 2005/10/15 09:03:57 dds Exp $
 
 -->
 
@@ -27,6 +27,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <html>
 <head>
   <title>CKJM Chidamber and Kemerer Java Metrics</title>
+  <meta name="Generator" content="$Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.3 2005/10/15 09:03:57 dds Exp $" />
   <style type="text/css">
       body {
         font:normal 68% verdana,arial,helvetica;
@@ -37,7 +38,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       }
 
       table tr td, tr th {
-          font-size: 68%;
+        font:normal 68% verdana,arial,helvetica;
       }
       table.details tr th{
         font-weight: bold;
@@ -88,66 +89,22 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <p align="right">Designed for use with <a href="http://www.dmst.aueb.gr/dds/sw/ckjm/">CKJM</a> and <a href="http://ant.apache.org">Ant</a>.</p>
 
 <hr size="2"/>
-
-<table>
-<tr>
-  <td><a name="NVsummary"><h2>Summary</h2></a></td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
-
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:for-each select="ckjm/class">
-<xsl:sort select="name" data-type="text" order="ascending"/>
-<tr>
-  <td><xsl:value-of select="name"/></td>
-  <td><xsl:value-of select="wmc"/></td>
-  <td><xsl:value-of select="cbo"/></td>
-  <td><xsl:value-of select="lcom"/></td>
-  <td><xsl:value-of select="rfc"/></td>
-  <td><xsl:value-of select="dit"/></td>
-  <td><xsl:value-of select="noc"/></td>
-  <td><xsl:value-of select="ce"/></td>
-</tr>
-</xsl:for-each>
-</table>
-
+<!-- Iterate over the metric elements, don't iterate over the name element -->
+<xsl:for-each select="ckjm/class[1]/*[name() != 'name']">
+<!-- This variable is needed for storing the sort attribute because at the point of sorting the name function will return 'class' instead of a metric attribute -->
+<xsl:variable name="sort" select="name()" />
 <table>
 <tr>
   <td>
-    <a name="NVwmc">
-     <h2>Top <xsl:value-of select="$top"/> Weighted Methods per Class (WMC)</h2>
+    <a>
+     <xsl:attribute name="name">NV<xsl:value-of select="name()" /></xsl:attribute> 
+     <h2>Top <xsl:value-of select="$top"/>: <xsl:value-of select="name()" /></h2>
      </a>
   </td>
   <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">noc</a>]
+    <xsl:for-each select="/ckjm/class[1]/*[name() != 'name']">
+      [<a><xsl:attribute name="href">#NV<xsl:value-of select="name()" /></xsl:attribute> <xsl:value-of select="name()"/></a>]
+    </xsl:for-each>
     [<a href="#NVexplanations">explanations</a>]
   </td>
 </tr>
@@ -155,262 +112,26 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <table class="details">
 <tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
+<xsl:for-each select="/ckjm/class[1]/*">
+  <th><xsl:value-of select="name()"/></th>
+</xsl:for-each>
 </tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="wmc" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
+<xsl:for-each select="/ckjm/class/*[name() = $sort]">
+<xsl:sort select="." data-type="number" order="descending"/>
+<xsl:if test="position() &lt;= $top">
 <tr>
-  <td>
-    <a name="NVcbo">
-      <h2>Top <xsl:value-of select="$top"/> Coupling Between Objects (CBO)</h2>
-    </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
+  <xsl:for-each select="../*">
+  <td><xsl:value-of select="text()"/></td>
+  </xsl:for-each>
 </tr>
+</xsl:if>
+</xsl:for-each>
 </table>
+</xsl:for-each>
 
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="cbo" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
-<tr>
-  <td>
-    <a name="NVlcom">
-      <h2>Top <xsl:value-of select="$top"/> Lack of Cohesions in Methods (LCOM)</h2>
-    </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
-
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="lcom" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
-<tr>
-  <td>
-    <a name="NVrfc">
-      <h2>Top <xsl:value-of select="$top"/> Response For Class (RFC)</h2>
-    </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
-
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="rfc" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
-<tr>
-  <td>
-    <a name="NVdit">
-      <h2>Top <xsl:value-of select="$top"/> Depth of Inheritance Tree (DIT)</h2>
-    </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
-
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="dit" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
-<tr>
-  <td>
-    <a name="NVnoc">
-      <h2>Top <xsl:value-of select="$top"/> Number of Children (NOC)</h2>
-    </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
-
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="noc" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
-<tr>
-  <td>
-    <a name="NVce">
-      <h2>Top <xsl:value-of select="$top"/> Efferent Couplings (Ce)</h2>
-    </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
-
-<table class="details">
-<tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
-</tr>
-<xsl:apply-templates select="ckjm/class">
-<xsl:sort select="ce" data-type="number" order="descending"/>
-</xsl:apply-templates>
-</table>
-
-<table>
-<tr>
-  <td>
     <a name="NVexplanations">
       <h2>Explanations</h2>
     </a>
-  </td>
-  <td align="right">
-    [<a href="#NVsummary">summary</a>]
-    [<a href="#NVwmc">wmc</a>]
-    [<a href="#NVcbo">cbo</a>]
-    [<a href="#NVlcom">lcom</a>]
-    [<a href="#NVrfc">rfc</a>]
-    [<a href="#NVdit">dit</a>]
-    [<a href="#NVnoc">noc</a>]
-    [<a href="#NVce">ce</a>]
-    [<a href="#NVexplanations">explanations</a>]
-  </td>
-</tr>
-</table>
 <dl>
 <dt>WMC - Weighted methods per class</dt><dd>
 A class's <em>weighted methods per class</em> WMC
@@ -490,21 +211,6 @@ calculating CBO.
 
 </body>
 </html>
-</xsl:template>
-
-<xsl:template match="class">
-<xsl:if test="position() &lt;= $top">
-<tr>
-  <td><xsl:value-of select="name"/></td>
-  <td><xsl:value-of select="wmc"/></td>
-  <td><xsl:value-of select="cbo"/></td>
-  <td><xsl:value-of select="lcom"/></td>
-  <td><xsl:value-of select="rfc"/></td>
-  <td><xsl:value-of select="dit"/></td>
-  <td><xsl:value-of select="noc"/></td>
-  <td><xsl:value-of select="ce"/></td>
-</tr>
-</xsl:if>
 </xsl:template>
 
 </xsl:stylesheet>

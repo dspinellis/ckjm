@@ -12,7 +12,7 @@
  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
- $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm.xsl,v 1.2 2005/07/30 14:17:26 dds Exp $
+ $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm.xsl,v 1.3 2005/10/15 09:03:57 dds Exp $
 
 -->
 
@@ -23,6 +23,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <html>
 <head>
   <title>CKJM Chidamber and Kemerer Java Metrics</title>
+  <meta name="Generator" content="$Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm.xsl,v 1.3 2005/10/15 09:03:57 dds Exp $" />
   <style type="text/css">
       body {
         font:normal 68% verdana,arial,helvetica;
@@ -33,7 +34,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
       }
 
       table tr td, tr th {
-          font-size: 68%;
+        font:normal 68% verdana,arial,helvetica;
       }
       table.details tr th{
         font-weight: bold;
@@ -65,29 +66,18 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <hr size="2"/>
 
 <h2>Summary</h2>
-
 <table class="details">
 <tr>
-  <th>Class</th>
-  <th>WMC</th>
-  <th>CBO</th>
-  <th>LCOM</th>
-  <th>RFC</th>
-  <th>DIT</th>
-  <th>NOC</th>
-  <th>Ce</th>
+<xsl:for-each select="/ckjm/class[1]/*">
+  <th><xsl:value-of select="name()"/></th>
+</xsl:for-each>
 </tr>
-<xsl:for-each select="ckjm/class">
+<xsl:for-each select="/ckjm/class">
 <xsl:sort select="name" data-type="text" order="ascending"/>
 <tr>
-  <td><xsl:value-of select="name"/></td>
-  <td><xsl:value-of select="wmc"/></td>
-  <td><xsl:value-of select="cbo"/></td>
-  <td><xsl:value-of select="lcom"/></td>
-  <td><xsl:value-of select="rfc"/></td>
-  <td><xsl:value-of select="dit"/></td>
-  <td><xsl:value-of select="noc"/></td>
-  <td><xsl:value-of select="ce"/></td>
+  <xsl:for-each select="*">
+  <td><xsl:value-of select="text()"/></td>
+  </xsl:for-each>
 </tr>
 </xsl:for-each>
 </table>
