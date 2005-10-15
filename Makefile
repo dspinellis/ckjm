@@ -1,8 +1,8 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.6 2005/07/30 14:19:05 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.7 2005/10/15 09:06:00 dds Exp $
 #
 
-VERSION=1.4
+VERSION=1.5
 TARBALL=ckjm-$(VERSION).tar.gz
 ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
@@ -17,7 +17,7 @@ all: antcompile
 antcompile:
 	ant -Dversion=$(VERSION)
 
-$(EGHTML): Makefile
+$(EGHTML): Makefile xsl/ckjm.xsl xsl/ckjm_extra.xsl
 	ant -Dversion=$(VERSION) html
 
 $(TARBALL): docs Makefile
