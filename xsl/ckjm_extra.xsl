@@ -12,7 +12,7 @@
  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
- $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.3 2005/10/15 09:03:57 dds Exp $
+ $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.4 2005/10/15 09:22:28 dds Exp $
 
 -->
 
@@ -27,7 +27,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <html>
 <head>
   <title>CKJM Chidamber and Kemerer Java Metrics</title>
-  <meta name="Generator" content="$Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.3 2005/10/15 09:03:57 dds Exp $" />
+  <meta name="Generator" content="$Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.4 2005/10/15 09:22:28 dds Exp $" />
   <style type="text/css">
       body {
         font:normal 68% verdana,arial,helvetica;
@@ -206,6 +206,10 @@ A class's efferent couplings is a measure of how many other classes
 use the specific class.
 Ce is calculated using the same definition as that used for
 calculating CBO.
+</dd><dt>NPM - Number of Public Methods</dt><dd>
+The NPM metric simply counts all the methods in a class that
+are declared as public.
+It can be used to measure the size of an API provided by a package.
 </dd>
 </dl>
 
