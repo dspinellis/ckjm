@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.17 2005/10/09 15:36:08 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.18 2005/10/15 09:03:07 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -29,7 +29,7 @@ import java.lang.reflect.Modifier;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -196,7 +196,6 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     public void end() {
 	cm.setCbo(afferentCoupledClasses.size());
 	cm.setRfc(responseSet.size());
-	System.out.println(myClassName+" RFC:"+responseSet);
 	/*
 	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
 	 * where
