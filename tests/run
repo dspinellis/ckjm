@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\tests\\run,v 1.1 2005/11/05 08:37:28 dds Exp $
+#
+VER=`sed -n 's/^VERSION=\(.*\)/\1/p' ../Makefile`
+echo Testing version $VER
+echo Expect 4 \"Test \# passed\" lines
+
+javac Test.java
+
+# Test metric values
+java -jar ../build/ckjm-$VER.jar *.class | sed 's/ /,WMC=/;s/ /,DIT=/;s/ /,NOC=/;s/ /,CBO=/;s/ /,RFC=/;s/ /,LCOM=/;s/ /,CA=/;s/ /,NPM=/' | sort >test.new
+diff -u test.ok test.new && echo Test 1 passed
+
+# Test invocation on multiple non trivial files
+java -jar ../build/ckjm-$VER.jar ../build/classes/gr/spinellis/ckjm/*.class >nul && echo Test 2 passed
+
+# Test jar reading
+java -jar ../build/ckjm-$VER.jar "../build/ckjm-$VER.jar gr/spinellis/ckjm/ClassVisitor.class" >nul && echo Test 3 passed
+
+# Test stdin specifications
+echo "../build/ckjm-$VER.jar gr/spinellis/ckjm/ClassVisitor.class" | java -jar ../build/ckjm-$VER.jar >nul && echo Test 4 passed
