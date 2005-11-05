@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.10 2005/08/10 16:53:36 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.11 2005/11/05 08:33:11 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -25,7 +25,7 @@ import java.util.HashSet;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassMetrics {
@@ -48,7 +48,7 @@ public class ClassMetrics {
     /** True if the class is public */
     private boolean isPublicClass;
     /** Coupled classes: classes that use this class */
-    private HashSet<String> efferentCoupledClasses;
+    private HashSet<String> afferentCoupledClasses;
 
     /** Default constructor. */
     ClassMetrics() {
@@ -58,7 +58,7 @@ public class ClassMetrics {
 	npm = 0;
 	parent = null;
 	visited = false;
-	efferentCoupledClasses = new HashSet<String>();
+	afferentCoupledClasses = new HashSet<String>();
     }
 
     /** Increment the weighted methods count */
@@ -101,10 +101,10 @@ public class ClassMetrics {
     /** Set the class's lack of cohesion in methods metric */
     public void setLcom(int l) { lcom = l; }
 
-    /** Return the class's efferent couplings metric */
-    public int getCe() { return efferentCoupledClasses.size(); }
+    /** Return the class's afferent couplings metric */
+    public int getCa() { return afferentCoupledClasses.size(); }
     /** Add a class to the set of classes that depend on this class */
-    public void addEfferentCoupling(String name) { efferentCoupledClasses.add(name); }
+    public void addAfferentCoupling(String name) { afferentCoupledClasses.add(name); }
 
     /** Increment the number of public methods count */
     public void incNpm() { npm++; }
@@ -134,7 +134,7 @@ public class ClassMetrics {
 		" " + cbo +
 		" " + rfc +
 		" " + lcom +
-		" " + getCe()+
+		" " + getCa()+
 		" " + npm);
     }
 

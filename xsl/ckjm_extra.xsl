@@ -12,7 +12,7 @@
  WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 
- $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.4 2005/10/15 09:22:28 dds Exp $
+ $Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.5 2005/11/05 08:32:32 dds Exp $
 
 -->
 
@@ -27,7 +27,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <html>
 <head>
   <title>CKJM Chidamber and Kemerer Java Metrics</title>
-  <meta name="Generator" content="$Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.4 2005/10/15 09:22:28 dds Exp $" />
+  <meta name="Generator" content="$Id: \\dds\\src\\Research\\ckjm.RCS\\xsl\\ckjm_extra.xsl,v 1.5 2005/11/05 08:32:32 dds Exp $" />
   <style type="text/css">
       body {
         font:normal 68% verdana,arial,helvetica;
@@ -201,10 +201,10 @@ Others modified the definition of connectedness to
 include calls between the methods of the class.
 The program <em>ckjm</em> follows the original (1994) definition
 by Chidamber and Kemerer.
-</dd><dt>Ce - Efferent couplings</dt><dd>
-A class's efferent couplings is a measure of how many other classes
+</dd><dt>Ca - Afferent couplings</dt><dd>
+A class's afferent couplings is a measure of how many other classes
 use the specific class.
-Ce is calculated using the same definition as that used for
+Ca is calculated using the same definition as that used for
 calculating CBO.
 </dd><dt>NPM - Number of Public Methods</dt><dd>
 The NPM metric simply counts all the methods in a class that

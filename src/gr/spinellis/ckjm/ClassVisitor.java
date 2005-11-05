@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.18 2005/10/15 09:03:07 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.19 2005/11/05 08:33:11 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -29,7 +29,7 @@ import java.lang.reflect.Modifier;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -46,7 +46,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
     /* Classes encountered.
      * Its cardinality is used for calculating the CBO.
      */
-    private HashSet<String> afferentCoupledClasses = new HashSet<String>();
+    private HashSet<String> efferentCoupledClasses = new HashSet<String>();
     /** Methods encountered.
      * Its cardinality is used for calculating the RFC.
      */
@@ -113,8 +113,8 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	if ((MetricsFilter.isJdkIncluded() ||
 	     !ClassMetrics.isJdkClass(className)) &&
 	    !myClassName.equals(className)) {
-	    afferentCoupledClasses.add(className);
-	    cmap.getMetrics(className).addEfferentCoupling(myClassName);
+	    efferentCoupledClasses.add(className);
+	    cmap.getMetrics(className).addAfferentCoupling(myClassName);
 	}
     }
 
@@ -194,7 +194,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
     /** Do final accounting at the end of the visit. */
     public void end() {
-	cm.setCbo(afferentCoupledClasses.size());
+	cm.setCbo(efferentCoupledClasses.size());
 	cm.setRfc(responseSet.size());
 	/*
 	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
