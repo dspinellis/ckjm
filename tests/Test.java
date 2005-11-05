@@ -1,7 +1,7 @@
 /*
  * ckjm test data
  *
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\tests\\Test.java,v 1.1 2005/06/02 08:40:40 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\tests\\Test.java,v 1.2 2005/11/05 08:37:28 dds Exp $
  *
  */
 
@@ -76,8 +76,8 @@ class Test6 {
     Test foo() { return null; }
 }
 
-/* Coupling (1) via method argument type */
+/* Coupling (1) via method argument type; also public method */
 class Test7 {
-    void foo(Test a) {}
+    public void foo(Test a) {}
 }
 
