@@ -4,7 +4,7 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <!-- No not edit this page in the web directory. -->
-<!-- $Id: \\dds\\src\\Research\\ckjm.RCS\\index.html,v 1.8 2005/11/05 08:32:56 dds Exp $ -->
+<!-- $Id: \\dds\\src\\Research\\ckjm.RCS\\index.html,v 1.9 2006/04/13 17:25:26 dds Exp $ -->
 <head>
 <title>ckjm &mdash; Chidamber and Kemerer Java Metrics</title>
 <meta name="AUTHOR" content="Diomidis Spinellis" />
@@ -37,9 +37,11 @@ In addition it also calculates for each class
 </ul>
 <p>
 I wrote this program out of frustration over the
-<a href="../../blog/20050211/">lack</a>
+<a href="http://www.spinellis.gr/blog/20050211/">lack</a>
 of reliable programs to calculate the
-Chidamber and Kemerer object-oriented metrics.
+Chidamber and Kemerer object-oriented metrics I needed
+to illustrate some concepts in my book
+<a href="http://www.spinellis.gr/codequality">Code Quality: The Open Source Perspective</a>.
 The programs I found on the web were either
 incomplete (they calculated only some of the metrics),
 or unreliable (they calculated results that were obviously wrong),
@@ -47,10 +49,7 @@ or extremely inefficient (they required GB of RAM and hours of processing).
 <em>Ckjm</em> is mean and lean, following the Unix tradition of doing
 one thing well.
 It will not automatically recurse directories looking for the files
-you want measured,
-it does not offer a GUI (or even an XML output facility),
-and it does not calculate metrics other than the six ones specified
-by Chidamber and Kemerer.
+you want measured and it does not offer a GUI.
 However, it does this job thoroughly, and efficiently:
 on a 1.6GHz Pentium-M machine it will process the 33MB of the Eclipse 3.0
 jar files (19717 classes) in 95 seconds.
@@ -114,7 +113,7 @@ and the complete documentation in HTML format).
 May be freely uploaded by WWW viewers and similar programs.
 All other rights reserved.
 <br />
-Last modified: $Date: 2005/11/05 08:32:56 $
+Last modified: $Date: 2006/04/13 17:25:26 $
 </font>
 </td></tr>
 </table>
