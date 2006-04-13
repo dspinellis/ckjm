@@ -1,7 +1,7 @@
 <project name="ckjm" default="compile" basedir=".">
 <description>
 	The specification for all ckjm build processes.
-	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.4 2005/07/30 14:17:36 dds Exp $
+	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.5 2006/04/13 21:18:49 dds Exp $
 </description>
 
 <!-- set global properties for this build -->
@@ -11,6 +11,7 @@
 <property name="images" location="images"/>
 <property name="dist"  location="/dds/pubs/web/home/sw/ckjm"/>
 <property name="jarfile"  location="${build}/ckjm-${version}.jar"/>
+<property name="javadoc" location="javadoc"/>
 
 <target name="init">
 	<!-- Create the time stamp -->
@@ -18,11 +19,12 @@
 	<!-- Create the build directory structure used by compile -->
 	<mkdir dir="${build}"/>
 	<mkdir dir="${build}/classes"/>
+	<mkdir dir="${javadoc}"/>
 </target>
 
 <target name="compile" depends="init"
 	description="compile the source, build library " >
-	<javac srcdir="${src}" destdir="${build}/classes" classpath="lib/bcel-5.1.jar" excludes="RCS/*,ant/RCS/*">
+	<javac srcdir="${src}" destdir="${build}/classes" classpath="lib/bcel-5.1.jar" excludes="**/RCS/*">
 		<compilerarg value="-Xlint:unchecked"/>
 	</javac>
 	<copy file="lib/bcel-5.1.jar"
@@ -44,6 +46,8 @@
 	</jar>
 </target>
 
+<!-- THE END -->
+
 <target name="html" depends="compile">
 	<taskdef name="ckjm" classname="gr.spinellis.ckjm.ant.CkjmTask">
 	  <classpath>
@@ -56,6 +60,34 @@
 	</ckjm>
 	<style in="hsqldb.xml" style="xsl/ckjm.xsl" out="output_simple.html" />
 	<style in="hsqldb.xml" style="xsl/ckjm_extra.xsl" out="output_extra.html" />
+</target>
+
+<target name="javadocs" depends="compile">
+	<javadoc packagenames="gr.spinellis.ckjm.*" destdir="${javadoc}" package="true" classpath="lib/bcel-5.1.jar">
+		<fileset dir="${src}" >
+		  <include name="**/*.java"/>
+		  <exclude name="**/RCS/*"/>
+		</fileset>
+	</javadoc>
+	<property name="outFolder" location="${javadoc}/gr/spinellis/ckjm"/>
+	<property name="dotName" value="umlgraph.dot"/>
+	<property name="dotFile" location="${outFolder}/${dotName}"/>
+	<property name="gifFile" location="${javadoc}/gr/spinellis/ckjm/ckjm.gif"/>
+	<javadoc packagenames="gr.spinellis.ckjm.*" package="true" classpath="lib/bcel-5.1.jar">
+		<fileset dir="${src}" >
+		  <include name="**/*.java"/>
+		  <exclude name="**/RCS/*"/>
+		</fileset>
+		<doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="../umlgraph/lib/UMLGraph.jar">
+			<param name="-d" value="${outFolder}"/>
+			<param name="-output" value="${dotName}"/>
+		</doclet>
+	</javadoc>
+	<exec executable="dot">
+		<arg value="-Tgif"/>
+		<arg value="-o${gifFile}"/>
+		<arg value="${dotFile}"/>
+	</exec>
 </target>
 
 </project>
