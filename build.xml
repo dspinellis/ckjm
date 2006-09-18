@@ -1,15 +1,17 @@
 <project name="ckjm" default="compile" basedir=".">
 <description>
 	The specification for all ckjm build processes.
-	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.5 2006/04/13 21:18:49 dds Exp $
+	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.6 2006/09/18 14:04:55 dds Exp $
 </description>
 
 <!-- set global properties for this build -->
 <!-- VERSION -->
+<property environment="env"/>
 <property name="src" location="src"/>
 <property name="build" location="build"/>
 <property name="images" location="images"/>
 <property name="dist"  location="/dds/pubs/web/home/sw/ckjm"/>
+<property name="antlib"  location="${env.ANT_HOME}/lib"/>
 <property name="jarfile"  location="${build}/ckjm-${version}.jar"/>
 <property name="javadoc" location="javadoc"/>
 
@@ -63,7 +65,13 @@
 </target>
 
 <target name="javadocs" depends="compile">
-	<javadoc packagenames="gr.spinellis.ckjm.*" destdir="${javadoc}" package="true" classpath="lib/bcel-5.1.jar">
+	<javadoc packagenames="gr.spinellis.ckjm.*" destdir="${javadoc}" package="true">
+		<classpath>
+		  <pathelement location="lib/bcel-5.1.jar"/>
+		  <fileset dir="${antlib}">
+		    <include name="**/*.jar"/>
+		  </fileset>
+		</classpath>
 		<fileset dir="${src}" >
 		  <include name="**/*.java"/>
 		  <exclude name="**/RCS/*"/>
@@ -73,7 +81,13 @@
 	<property name="dotName" value="umlgraph.dot"/>
 	<property name="dotFile" location="${outFolder}/${dotName}"/>
 	<property name="gifFile" location="${javadoc}/gr/spinellis/ckjm/ckjm.gif"/>
-	<javadoc packagenames="gr.spinellis.ckjm.*" package="true" classpath="lib/bcel-5.1.jar">
+	<javadoc packagenames="gr.spinellis.ckjm.*" package="true">
+		<classpath>
+		  <pathelement location="lib/bcel-5.1.jar"/>
+		  <fileset dir="${antlib}">
+		    <include name="**/*.jar"/>
+		  </fileset>
+		</classpath>
 		<fileset dir="${src}" >
 		  <include name="**/*.java"/>
 		  <exclude name="**/RCS/*"/>
