@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ant\\CkjmTask.java,v 1.1 2005/05/11 20:48:32 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ant\\CkjmTask.java,v 1.2 2006/09/18 14:00:44 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis, Julien Rentrop
  *
@@ -32,7 +32,7 @@ import org.apache.tools.ant.taskdefs.MatchingTask;
 /**
  * Ant task definition for the CKJM metrics tool.
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @author Julien Rentrop
  */
 public class CkjmTask extends MatchingTask {
@@ -71,8 +71,8 @@ public class CkjmTask extends MatchingTask {
     /**
      * Sets the dir which contains the class files that will be analyzed
      *
-     * @param outputfile
-     *            Location of outputfile
+     * @param classDir
+     *            Location of class files
      */
     public void setClassdir(File classDir) {
         this.classDir = classDir;
