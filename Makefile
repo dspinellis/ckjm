@@ -1,5 +1,5 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.9 2006/04/13 21:18:49 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.10 2007/04/03 07:07:27 dds Exp $
 #
 
 VERSION=1.7
@@ -26,7 +26,7 @@ $(TARBALL): docs Makefile
 	mkdir $(DISTDIR)
 	mkdir $(DISTDIR)/{doc,src,lib,build,xsl}
 	mkdir -p $(DISTDIR)/src/gr/spinellis/ckjm/ant
-	tar cf - javadoc | tar -C $(DISTDIR) -xf -
+	tar cf - javadoc contrib | tar -C $(DISTDIR) -xf -
 	cp $(WEBDIR)/doc/* $(DISTDIR)/doc
 	cp build/ckjm-$(VERSION).jar $(DISTDIR)/build
 	cp lib/$(BCEL) $(DISTDIR)/lib
