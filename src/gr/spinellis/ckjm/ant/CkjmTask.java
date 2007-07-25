@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ant\\CkjmTask.java,v 1.2 2006/09/18 14:00:44 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ant\\CkjmTask.java,v 1.3 2007/07/25 15:19:09 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis, Julien Rentrop
  *
@@ -28,17 +28,20 @@ import java.io.PrintStream;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.types.Path;
 
 /**
  * Ant task definition for the CKJM metrics tool.
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @author Julien Rentrop
  */
 public class CkjmTask extends MatchingTask {
     private File outputFile;
 
     private File classDir;
+
+    private Path extdirs;
 
     private String format;
 
@@ -79,6 +82,37 @@ public class CkjmTask extends MatchingTask {
     }
 
     /**
+     * Sets the extension directories that will be used by ckjm.
+     * @param extdirs a path containing .jar files
+     */
+    public void setExtdirs(Path e) {
+        if (extdirs == null) {
+            extdirs = e;
+        } else {
+            extdirs.append(e);
+        }
+    }
+
+    /**
+     * Gets the extension directories that will be used by ckjm.
+     * @return the extension directories as a path
+     */
+    public Path getExtdirs() {
+        return extdirs;
+    }
+
+    /**
+     * Adds a path to extdirs.
+     * @return a path to be modified
+     */
+    public Path createExtdirs() {
+        if (extdirs == null) {
+            extdirs = new Path(getProject());
+        }
+        return extdirs.createPath();
+    }
+
+    /**
      * Executes the CKJM Ant Task. This method redirects the output of the CKJM
      * tool to a file. When XML format is used it will buffer the output and
      * translate it to the XML format.
@@ -96,6 +130,15 @@ public class CkjmTask extends MatchingTask {
         if (!classDir.isDirectory()) {
             throw new BuildException("classdir is not a directory!");
         }
+
+	if (extdirs != null && extdirs.size() > 0) {
+	    if (System.getProperty("java.ext.dirs").length() == 0)
+		System.setProperty("java.ext.dirs", extdirs.toString());
+	    else
+		System.setProperty("java.ext.dirs",
+		    System.getProperty("java.ext.dirs") + File.pathSeparator +
+		    extdirs);
+	}
 
         DirectoryScanner ds = super.getDirectoryScanner(classDir);
 
