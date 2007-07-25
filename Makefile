@@ -1,12 +1,12 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.11 2007/07/25 12:24:38 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.12 2007/07/25 12:36:32 dds Exp $
 #
 
 VERSION=1.8
 TARBALL=ckjm-$(VERSION).tar.gz
 ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
-WEBDIR=/dds/pubs/web/home/sw/ckjm
+WEBDIR=$(UH)/dds/pubs/web/home/sw/ckjm
 SRCFILE=README.txt LICENSE.txt build.xml src/gr/spinellis/ckjm/*.java src/gr/spinellis/ckjm/ant/*.java xsl/*.xsl
 BCEL=bcel-5.1.jar
 EGHTML=output_simple.html output_extra.html
@@ -35,7 +35,7 @@ $(TARBALL): docs Makefile
 	perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//' $$i >$(DISTDIR)/$$i;\
 	done
 	perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//;print q{<property name="version" value="'$(VERSION)'"/> } if (/VERSION/); if (/THE END/) { print qq{</project>\n}; last;}' build.xml >$(DISTDIR)/build.xml
-	tar cvf - $(DISTDIR) | gzip -c >$(TARBALL)
+	tar czvf - $(DISTDIR)/$(TARBALL)
 	zip -r $(ZIPBALL) $(DISTDIR)
 
 docs:
