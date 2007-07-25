@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.19 2005/11/05 08:33:11 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.20 2007/07/25 12:24:00 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -29,7 +29,7 @@ import java.lang.reflect.Modifier;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -84,13 +84,7 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	ClassMetrics pm = cmap.getMetrics(super_name);
 
 	pm.incNoc();
-	/*
-	 * JRE's Object has Object as its parent.
-	 * Skip it or else we'll get into infinite recursion
-	 * when calculating DIT.
-	 */
-	if (!jc.getClassName().equals("java.lang.Object"))
-	    cm.setParent(pm);
+	cm.setDit(jc.getSuperClasses().length);
 	registerCoupling(super_name);
 
 	String ifs[] = jc.getInterfaceNames();

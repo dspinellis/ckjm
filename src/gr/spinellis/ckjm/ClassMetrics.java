@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.11 2005/11/05 08:33:11 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassMetrics.java,v 1.12 2007/07/25 12:24:00 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -25,7 +25,7 @@ import java.util.HashSet;
  * measurement.
  *
  * @see ClassVisitor
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassMetrics {
@@ -35,10 +35,10 @@ public class ClassMetrics {
     private int noc;
     /** Response for a Class */
     private int rfc;
-    /** The class's parent class */
-    private ClassMetrics parent;
     /** Coupling between object classes */
     private int cbo;
+    /** Depth of inheritence tree */
+    private int dit;
     /** Lack of cohesion in methods */
     private int lcom;
     /** Number of public methods */
@@ -56,7 +56,6 @@ public class ClassMetrics {
 	noc = 0;
 	cbo = 0;
 	npm = 0;
-	parent = null;
 	visited = false;
 	afferentCoupledClasses = new HashSet<String>();
     }
@@ -76,22 +75,12 @@ public class ClassMetrics {
     /** Return the Response for a Class */
     public int getRfc() { return rfc; }
 
-    /* Set the class's parent */
-    public void setParent(ClassMetrics p) { parent = p; }
-    /** Return the class's parent */
-    public ClassMetrics getParent() { return parent; }
+    /** Set the depth of inheritence tree metric */
+    public void setDit(int d) { dit = d; }
     /** Return the depth of the class's inheritance tree */
-    public int getDit() {
-	int i = 0;
-	ClassMetrics c = parent;
-	while (c != null) {
-	    c = c.getParent();
-	    i++;
-	}
-	return i;
-    }
+    public int getDit() { return dit; }
 
-    /** Increment the coupling between object classes metric */
+    /** Set the coupling between object classes metric */
     public void setCbo(int c) { cbo = c; }
     /** Return the coupling between object classes metric */
     public int getCbo() { return cbo; }
