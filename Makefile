@@ -1,5 +1,5 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.12 2007/07/25 12:36:32 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.13 2007/07/25 15:19:40 dds Exp $
 #
 
 VERSION=1.8
@@ -31,11 +31,11 @@ $(TARBALL): docs Makefile
 	cp build/ckjm-$(VERSION).jar $(DISTDIR)/build
 	cp lib/$(BCEL) $(DISTDIR)/lib
 	for i in $(SRCFILE) ;\
-	do\
-	perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//' $$i >$(DISTDIR)/$$i;\
+	do \
+		perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//' $$i >$(DISTDIR)/$$i;\
 	done
 	perl -p -e 'BEGIN {binmode(STDOUT);} s/\r//;print q{<property name="version" value="'$(VERSION)'"/> } if (/VERSION/); if (/THE END/) { print qq{</project>\n}; last;}' build.xml >$(DISTDIR)/build.xml
-	tar czvf - $(DISTDIR)/$(TARBALL)
+	tar czvf $(TARBALL) $(DISTDIR)
 	zip -r $(ZIPBALL) $(DISTDIR)
 
 docs:
