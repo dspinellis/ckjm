@@ -1,7 +1,7 @@
 <project name="ckjm" default="compile" basedir=".">
 <description>
 	The specification for all ckjm build processes.
-	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.7 2007/07/25 15:19:49 dds Exp $
+	$Id: \\dds\\src\\Research\\ckjm.RCS\\build.xml,v 1.8 2007/12/27 16:16:32 dds Exp $
 </description>
 
 <!-- set global properties for this build -->
@@ -93,7 +93,7 @@
 		  <include name="**/*.java"/>
 		  <exclude name="**/RCS/*"/>
 		</fileset>
-		<doclet name="gr.spinellis.umlgraph.doclet.UmlGraph" path="../umlgraph/lib/UMLGraph.jar">
+		<doclet name="org.umlgraph.doclet.UmlGraph" path="../umlgraph/lib/UMLGraph.jar">
 			<param name="-d" value="${outFolder}"/>
 			<param name="-output" value="${dotName}"/>
 		</doclet>
