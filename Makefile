@@ -1,8 +1,8 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.13 2007/07/25 15:19:40 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.14 2007/12/27 16:14:12 dds Exp $
 #
 
-VERSION=1.8
+VERSION=1.9
 TARBALL=ckjm-$(VERSION).tar.gz
 ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
@@ -46,3 +46,8 @@ docs:
 web: $(TARBALL) $(EGHTML)
 	cp $(ART) $(EGHTML) $(TARBALL) $(ZIPBALL) $(WEBDIR)
 	sed "s/VERSION/$(VERSION)/g" index.html >$(WEBDIR)/index.html
+
+# A simple regression test
+test: antcompile
+	jar tf test/ckjm-1.8.jar | sed -n '/\.class$$/s/^/test\/ckjm-1.8.jar /p' | java -jar build/ckjm-$(VERSION).jar >test/new.txt
+	diff test/old.txt test/new.txt && echo OK
