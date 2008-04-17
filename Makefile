@@ -1,5 +1,5 @@
 #
-# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.14 2007/12/27 16:14:12 dds Exp $
+# $Id: \\dds\\src\\Research\\ckjm.RCS\\Makefile,v 1.15 2008/04/17 08:44:48 dds Exp $
 #
 
 VERSION=1.9
@@ -7,19 +7,19 @@ TARBALL=ckjm-$(VERSION).tar.gz
 ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
 WEBDIR=$(UH)/dds/pubs/web/home/sw/ckjm
-SRCFILE=README.txt LICENSE.txt build.xml src/gr/spinellis/ckjm/*.java src/gr/spinellis/ckjm/ant/*.java xsl/*.xsl
-BCEL=bcel-5.1.jar
+SRCFILE=README.txt LICENSE.txt build.xml src/gr/spinellis/ckjm/*.java src/gr/spinellis/ckjm/ant/*.java xsl/*.xsl lib/*.txt
+BCEL=bcel-5.2.jar
 EGHTML=output_simple.html output_extra.html
 ART=smallpic.jpg
 
 all: antcompile
 
 antcompile:
-	ant -Dversion=$(VERSION)
-	ant -Dversion=$(VERSION) javadocs
+	ant -Dversion=$(VERSION) -Dbcel=$(BCEL)
+	ant -Dversion=$(VERSION) -Dbcel=$(BCEL) javadocs
 
 $(EGHTML): Makefile xsl/ckjm.xsl xsl/ckjm_extra.xsl
-	ant -Dversion=$(VERSION) html
+	ant -Dversion=$(VERSION) -Dbcel=$(BCEL) html
 
 $(TARBALL): docs Makefile
 	-cmd /c rd /s/q $(DISTDIR)
