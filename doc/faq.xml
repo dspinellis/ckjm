@@ -3,7 +3,7 @@
 
 <!--
 To update the table of contents execute the following vim command from a register
-/^<h2>Contentsjjma/ul>kmb/^$"qyy:g/^<a name/s,<a name="\([^>]*\)><h2>\(.*\)</a></h2>,<li> <a href="\#\1>\2</a><\/li>,|y Q|u'ad'b"qP
+/^<h2>Contents^jjma/ul>^kmb/^$^"qyy:g/^<a name/s,<a name="\([^>]*\)><h2>\(.*\)</a></h2>,<li> <a href="\#\1>\2</a><\/li>,|y Q|u^'ad'b"qP
 -->
 
 <h2>Contents</h2>
@@ -59,7 +59,7 @@ and the rationale of its design.
 <p>
 Diomidis Spinellis.
 <a href="http://www.dmst.aueb.gr/dds/pubs/jrnl/2005-IEEESW-TotT/html/v22n4.html">Tool writing: A forgotten art?</a>.
-<cite>IEEE Software</cite>, 22(4):9–11, July/August 2005.
+<cite>IEEE Software</cite>, 22(4):9-11, July/August 2005.
 (<a href="http://dx.doi.org/10.1109/MS.2005.111">doi:10.1109/MS.2005.111</a>)
 </p>
 </blockquote>
