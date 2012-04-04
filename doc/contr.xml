@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<notes>
+<dl>
+<dt>Panagiotis Louridas</dt><dd>Fix for a script in the documentation</dd>
+<dt>Antti Pöyhönen</dt><dd>RFC fix, count exceptions</dd>
+<dt>Julien Rentrop</dt><dd>XML output and Ant task</dd>
+</dl>
+</notes>
+

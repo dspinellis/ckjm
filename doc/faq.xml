@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<notes>
+
+<!--
+To update the table of contents execute the following vim command from a register
+/^<h2>Contentsjjma/ul>kmb/^$"qyy:g/^<a name/s,<a name="\([^>]*\)><h2>\(.*\)</a></h2>,<li> <a href="\#\1>\2</a><\/li>,|y Q|u'ad'b"qP
+-->
+
+<h2>Contents</h2>
+<ul>
+
+<li> <a href="#varhand">The metrics calculated by the program do not agree with those I calculate by hand.  How come?</a></li>
+<li> <a href="#jar">How can I process class files located in a jar file?</a></li>
+<li> <a href="#jdk14">How can I run the tool in a JDK 1.4 environment?</a></li>
+<li> <a href="#extdirs">I'm getting a ClassNotFoundException.  How can I fix it?</a></li>
+<li> <a href="#cite">I'm using <em>ckjm</em> in my research.  How shall I cite it?</a></li>
+<li> <a href="#spaces">How can I deal with directory names containing spaces?</a></li>
+</ul>
+
+<h2><a name="varhand">The metrics calculated by the program do not agree with those I calculate by hand.  How come?</a></h2>
+The <em>ckjm</em> program calculates the metrics from the code
+appearing in the compiled bytecode files.
+The Java compiler optimizes away some elements of the code
+(for example <code>static final</code> fields, and these do not
+take part in the calculations.
+You may want to consult the disassembled code
+(using a command like <code>javap -c -private</code> to see
+what elements <em>ckjm</em> takes into account.
+
+<h2><a name="jar">How can I process class files located in a jar file?</a></h2>
+See the documentation section titled
+<a href="insel.html">Using Pipelines to Select Classes</a>.
+
+<h2><a name="jdk14">How can I run the tool in a JDK 1.4 environment?</a></h2>
+You can use the open source tool <a href="http://retroweaver.sf.net">retroweaver</a>
+to create a backwards-compatible jar file.
+(Suggested by Paul King).
+
+<h2><a name="extdirs">I'm getting a ClassNotFoundException.  How can I fix it?</a></h2>
+If you are getting messages like the one below, it means that <em>ckjm</em>
+can't locate the code for the corresponding classes, in order to properly
+calculate the depth of the inheritance tree (DIT) metric.
+<code>
+java.lang.ClassNotFoundException: Exception while looking for class
+javax.servlet.http.HttpServlet: java.io.IOException:
+Couldn't find: javax.servlet.http.HttpServlet.class
+</code>
+To solve this problem you must explicitly setup the
+<code>java.ext.dirs</code> property pointing to a directory containing
+the <em>jar</em> files where <em>ckjm</em> can locate those classes.
+Example:
+<code>
+java -Djava.ext.dirs=lib -jar ckjm-1.8.jar *.class
+</code>
+<h2><a name="cite">I'm using <em>ckjm</em> in my research.  How shall I cite it?</a></h2>
+Please cite the following article, which describes <em>ckjm</em>
+and the rationale of its design.
+<blockquote>
+<p>
+Diomidis Spinellis.
+<a href="http://www.dmst.aueb.gr/dds/pubs/jrnl/2005-IEEESW-TotT/html/v22n4.html">Tool writing: A forgotten art?</a>.
+<cite>IEEE Software</cite>, 22(4):9–11, July/August 2005.
+(<a href="http://dx.doi.org/10.1109/MS.2005.111">doi:10.1109/MS.2005.111</a>)
+</p>
+</blockquote>
+<h2><a name="spaces">How can I deal with directory names containing spaces?</a></h2>
+It's best to avoid putting spaces in file and directory names, because
+these can confuse many Unix-related tools that use spaces to separate
+arguments.
+If you can't avoid them, here are two tricks for getting around the problem.
+In a Windows environment use <em>dir /x</em> on the command line to
+obtain the short (8.3) name of the corresponding directory.
+On a Unix machine create a symbolic from the directory containing spaces
+to a directory without spaces, and use that second name:
+<fmtcode ext="sh">
+ln -s '/path/to/directory with spaces/' /tmp/shortname
+</fmtcode>
+</notes>

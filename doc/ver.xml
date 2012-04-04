@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<notes>
+<dl>
+
+<dt>Version 1.9 Under development</dt><dd>
+<ul>
+<li> Integrated BCEL 5.2 (Andre Fleischer).</li>
+</ul>
+</dd>
+
+<dt>Version 1.8 2007-07-25 </dt><dd>
+<ul>
+<li> Contributed code contains Ruby scripts that plot ckjm metrics as charts.</li>
+<li> The DIT calculation now also takes into account classes that are not
+directly processed.
+This may require explicitly setting up the java.ext.dirs property so that
+<em>ckjm</em> can locate the jar files containing those classes.
+Example:
+<fmtcode ext="sh">
+java -Djava.ext.dirs=lib -jar ckjm-1.8.jar *.class
+</fmtcode>
+In the corresponding <em>ant</em> task, the new <code>extdirs</code>
+<a href="http://ant.apache.org/manual/using.html#path">path-like structure</a>
+of the <em>ckjm</em> task will accomplish the same function.
+Example:
+<fmtcode ext="xml">
+<ckjm outputfile="hsqldb.xml" format="xml" classdir="/app/hsqldb/classes">
+  <extdirs path="/app/hsqldb/lib" />
+  <include name="**/*.class" />
+</ckjm>
+</fmtcode>
+(This issue was discovered by 최재영(Choi Jae Young).)
+</li>
+</ul>
+</dd>
+
+<dt>Version 1.7 2006-04-14</dt><dd>
+<ul>
+<li> Improve source code organization </li>
+<li> Add javadoc documentation </li>
+</ul>
+</dd>
+
+<dt>Version 1.6 2005-11-05</dt><dd>
+<ul>
+<li> Fix confusion between afferent and efferent couplings. (noted by Christian Hansen)</li>
+</ul>
+</dd>
+
+<dt>Version 1.5 2005-10-15</dt><dd>
+<ul>
+<li> Add number of public methods (NPM) metric.</li>
+<li> Declared exceptions affect coupling measurements (Antti Pöyhönen).</li>
+<li> Option to report only public classes.</li>
+<li> Count number of public methods.</li>
+<li> Calls to different overloaded methods are measured separately (Antti Pöyhönen.</li>
+<li> The XSL transformations are now more intelligent,
+and therefore easier to modify. (Julien Rentrop). </li>
+</ul>
+</dd>
+
+<dt>Version 1.4 2005-07-30</dt><dd>
+<ul>
+<li> Added new class metric: efferent couplings (Ce). </li>
+<li> Added command-line switch -s to enable the processing of the Java SDK
+classes. </li>
+</ul>
+</dd>
+
+<dt>Version 1.3 2005-06-02</dt><dd>
+<ul>
+<li> Also count own class's methods when measuring RFC (Antti Pöyhönen). </li>
+</ul>
+</dd>
+
+<dt>Version 1.2 2005-05-11</dt><dd>
+<ul>
+<li> Fix problem where processing JRE would hang following Object's parent (Object). </li>
+<li> Add Ant task, XML output, and XSL files. (Julien Rentrop). </li>
+</ul>
+</dd>
+
+<dt>Version 1.1 2005-02-21</dt><dd>
+<ul>
+<li> First public release. </li>
+</ul>
+</dd>
+
+</dl>
+</notes>
+
