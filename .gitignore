@@ -1,0 +1,8 @@
+build/
+doc/fmtcache/
+hsqldb.xml
+javadoc/
+output_extra.html
+output_simple.html
+test/new.txt
+ckjm-[0-9]*
