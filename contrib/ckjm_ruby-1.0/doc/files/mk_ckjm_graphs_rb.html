@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: mk_ckjm_graphs.rb</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>mk_ckjm_graphs.rb</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>mk_ckjm_graphs.rb
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Thu Feb 15 01:30:39 -0500 2007</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+This program gets statistics based on the output of the ckjm program (<a
+href="http://www.spinellis.gr/sw/ckjm">www.spinellis.gr/sw/ckjm</a>) and
+generates graphs in PNG format using gnuplot (V4 or later required). There
+is one graph per metric, which all get stored in the current directory.
+ckjm must create output using the &quot;plain&quot; (default) option.
+</p>
+<p>
+To run this program:
+</p>
+<pre>
+  ruby mk_ckjm_graphs.rb ckjm-text-file
+</pre>
+<p>
+ckjm plain output creates a text file with a line for each class. Each line
+consists of the class name, followed by 8 numeric metrics as described
+below. Values are space-separated.
+</p>
+<pre>
+  com.my.ClassName WMC DIT NOC CBO RFC LCOM Ca NPM
+</pre>
+<p>
+Example:
+</p>
+<pre>
+  com.vz.schedule.data.ScheduleData 15 1 0 0 20 69 3 15
+</pre>
+<p>
+The following text is from Diomidis Spinellis&#8217; ckjm web page:
+</p>
+<p>
+The metrics ckjm will calculate and display for each class are the
+following.
+</p>
+<ul>
+<li><b>WMC - Weighted methods per class</b>. A class&#8216;s weighted methods
+per class WMC metric is simply the sum of the complexities of its methods.
+As a measure of complexity we can use the cyclomatic complexity, or we can
+abritrarily assign a complexity value of 1 to each method. The ckjm program
+assigns a complexity value of 1 to each method, and therefore the value of
+the WMC is equal to the number of methods in the class.
+
+</li>
+<li><b>DIT - Depth of Inheritance Tree</b>. The depth of inheritance tree (DIT)
+metric provides for each class a measure of the inheritance levels from the
+object hierarchy top. In Java where all classes inherit Object the minimum
+value of DIT is 1.
+
+</li>
+<li><b>NOC - Number of Children</b>. A class&#8216;s number of children (NOC)
+metric simply measures the number of immediate descendants of the class.
+
+</li>
+<li><b>CBO - Coupling between object classes</b>. The coupling between object
+classes (CBO) metric represents the number of classes coupled to a given
+class (efferent couplings, Ce). This coupling can occur through method
+calls, field accesses, inheritance, arguments, return types, and
+exceptions.
+
+</li>
+<li><b>RFC - Response for a Class</b>. The metric called the response for a
+class (RFC) measures the number of different methods that can be executed
+when an object of that class receives a message (when a method is invoked
+for that object). Ideally, we would want to find for each method of the
+class, the methods that class will call, and repeat this for each called
+method, calculating what is called the transitive closure of the
+method&#8216;s call graph. This process can however be both expensive and
+quite inaccurate. In ckjm, we calculate a rough approximation to the
+response set by simply inspecting method calls within the class&#8216;s
+method bodies. This simplification was also used in the 1994 Chidamber and
+Kemerer description of the metrics.
+
+</li>
+<li><b>LCOM - Lack of cohesion in methods</b>. A class&#8216;s lack of cohesion
+in methods (LCOM) metric counts the sets of methods in a class that are not
+related through the sharing of some of the class&#8216;s fields. The
+original definition of this metric (which is the one used in ckjm)
+considers all pairs of a class&#8216;s methods. In some of these pairs both
+methods access at least one common field of the class, while in other pairs
+the two methods to not share any common field accesses. The lack of
+cohesion in methods is then calculated by subtracting from the number of
+method pairs that don&#8216;t share a field access the number of method
+pairs that do. Note that subsequent definitions of this metric used as a
+measurement basis the number of disjoint graph components of the
+class&#8216;s methods. Others modified the definition of connectedness to
+include calls between the methods of the class. The program ckjm follows
+the original (1994) definition by Chidamber and Kemerer.
+
+</li>
+<li><b>Ca - Afferent couplings</b>. A class&#8216;s afferent couplings is a
+measure of how many other classes use the specific class. Ca is calculated
+using the same definition as that used for calculating CBO (Ce).
+
+</li>
+<li><b>NPM - Number of Public Methods</b>. The NPM metric simply counts all the
+methods in a class that are declared as public. It can be used to measure
+the size of an API provided by a package.
+
+</li>
+</ul>
+
+    </div>
+
+    <div id="requires-list">
+      <h3 class="section-bar">Required files</h3>
+
+      <div class="name-list">
+      <a href="metrics_utils_rb.html">metrics_utils</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

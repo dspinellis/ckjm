@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<index>
+<ch><ti>Introduction</ti><fi>intro</fi></ch>
+<ch><ti>Operation</ti><fi>oper</fi></ch>
+<ch><ti>Using Pipelines to Select Classes</ti><fi>insel</fi></ch>
+<ch><ti>Using Pipelines to Format the Output</ti><fi>outfmt</fi></ch>
+<ch><ti>Metric Descriptions</ti><fi>metric</fi></ch>
+<ch><ti>Measurement Details</ti><fi>detail</fi></ch>
+<ch><ti>Using Ckjm With Ant</ti><fi>anttask</fi></ch>
+<ch><ti>Web Links and Acknowledgements</ti><fi>web</fi></ch>
+<ch><ti>Bibliography</ti><fi>bib</fi></ch>
+<ch><ti>Version History</ti><fi>ver</fi></ch>
+<ch><ti>Frequently Asked Questions</ti><fi>faq</fi></ch>
+<ch><ti>Contributors</ti><fi>contr</fi></ch>
+</index>

@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<notes>
+<h2>Related Links</h2>
+<ul>
+<li><a href="http://javaboutique.internet.com/tutorials/codemetrics/">Metrics for Object Oriented Software Development</a></li>
+<li><a href="http://jakarta.apache.org/bcel/">BCEL - Byte Code Engineering Library</a></li>
+<li><a href="http://www.dmst.aueb.gr/dds/blog/20050211/">An Open Source Java Metrics Toolset Is Hard to Find</a></li>
+</ul>
+<h2>Derived Software</h2>
+<ul>
+<li><a href="http://gromit.iiar.pwr.wroc.pl/p_inf/ckjm/">CKJM Pro</a> adds many quality-oriented metrics</li>
+</ul>
+<p>
+This product includes software developed by the
+<a href="http://www.apache.org/">Apache Software Foundation</a>.
+</p>
+</notes>

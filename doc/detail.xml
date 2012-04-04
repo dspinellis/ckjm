@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<notes>
+The original definition of the metrics, and implementation details
+of both the program, and the Java language provide some leeway on
+how the metrics are measured.
+The following list contains the most important decisions.
+These are marked in the source code with a comment,
+such as the following.
+<fmtcode ext="java">
+/* Measuring decision: couple interfaces */
+</fmtcode>
+<ul>
+<li> Interfaces are measured when considering a class's coupling.
+Rationale: changes to the interface may well require changes
+to the class.</li>
+<li> Use of Java SDK classes (java.*, javax.*, and some others)
+does not count toward a class's coupling.
+Rationale: the Java SDK classes are relatively stable,
+in comparison to the rest of the project.
+A command line argument switch (<code>-s</code>) is available for including
+the Java SDK classes into the calculation.</li>
+<li> Calls to JDK methods are included in the RFC calculation.
+Rationale: the method calls increase the class's complexity.</li>
+<li> The classes used for catching exceptions contribute toward the
+class's coupling measurements.
+Rationale: at the point where an exception is caught a new object
+of the corresponding type is instantiated.</li>
+<li> The complexity of each method is considered 1, when calculating WMC.
+Rationale: ease of implementation, and compatibility with Chidamber and Kemerer.</li>
+<li> LCOM is calculated following the 1994 paper description, and not
+by looking at disjoint graph components.
+Rationale: ease of implementation, and compatibility with Chidamber and Kemerer.</li>
+<li> RFC is calculated up to the first method call level, and not
+through the transitive closure of all method calls.
+Rationale: ease of implementation, and compatibility with Chidamber and Kemerer.</li>
+<li>A class's own methods contribute to its RFC.
+Rationale: the original Chidamber and Kemerer article describes RFC as a
+union of the set of methods called by the class and the set of methods in
+the class.
+</li>
+</ul>
+</notes>

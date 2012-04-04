@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>metrics (MetricsUtils::JavaMetrics)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File metrics_utils.rb, line 124</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">metrics</span>
+      <span class="ruby-ivar">@distribution</span>.<span class="ruby-identifier">clear</span>
+      <span class="ruby-constant">File</span>.<span class="ruby-identifier">foreach</span>(<span class="ruby-ivar">@ckjm_file_name</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">line</span>.<span class="ruby-identifier">chomp!</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^\S+(\s+\d+){8}\s*$/</span>
+          <span class="ruby-identifier">class_name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">metrics_vals</span> = <span class="ruby-identifier">line</span>.<span class="ruby-identifier">split</span>(<span class="ruby-regexp re">/\s+/</span>)
+          <span class="ruby-constant">METRICS</span>.<span class="ruby-identifier">each_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+            <span class="ruby-identifier">value</span> = <span class="ruby-identifier">metrics_vals</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">to_i</span>
+            (<span class="ruby-ivar">@distribution</span>[<span class="ruby-constant">METRICS</span>[<span class="ruby-identifier">i</span>][<span class="ruby-value">0</span>]] <span class="ruby-operator">||=</span> <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">0</span>))[<span class="ruby-identifier">value</span>] <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-ivar">@distribution</span>
+    <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

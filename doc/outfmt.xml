@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<notes>
+The output of <em>ckjm</em> is textual:
+one line for each class, each line contains 8 space-separated fields:
+the classname and the 7 metrics.
+If your application requires something more fancy,
+it is easy to post-process the <em>ckjm</em> output to
+obtain it.
+For example, the following <em>sed</em> script will generate
+XML output.
+<fmtcode ext="sed">
+#!/bin/sed -f
+1i\
+<?xml version="1.0" ?>\
+<ckjm>
+s/^/<metric><classname>/
+s/ /<\/classname><WMC>/
+s/ /<\/WMC><DIT>/
+s/ /<\/DIT><NOC>/
+s/ /<\/NOC><CBO>/
+s/ /<\/CBO><RFC>/
+s/ /<\/RFC><LCOM>/
+s/ /<\/LCOM><Ca>/
+s/ /<\/Ca><NPM>/
+s/$/<\/NPM><\/metric>/
+$a\
+</ckjm>
+</fmtcode>
+If you name the script <em>ckjm2xml</em> and make it executable,
+you can generate XML output and save it into a file as follows.
+<fmtcode ext="sh">
+java -jar /usr/local/lib/ckjm.jar *.class | ckjm2xml >metrics.xml
+</fmtcode>
+(Replace the sequence <code>/usr/local/lib/ckjm.jar</code>
+with the actual path and filename of the <em>ckjm</em> version you are using.)
+<br />
+Here is an example of the output.
+<!--
+java -jar ..\build\ckjm-1.6.jar ..\build\classes\gr\spinellis\ckjm\*.class | sed -f ckjm2xml | winclip -c
+-->
+<fmtcode ext="xml">
+<?xml version="1.0" ?>
+<ckjm>
+<metric><classname>gr.spinellis.ckjm.ClassMetricsContainer</classname><WMC>3</WMC><DIT>1</DIT><NOC>0</NOC><CBO>3</CBO><RFC>18</RFC><LCOM>0</LCOM><Ca>2</Ca><NPM>2</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.MethodVisitor</classname><WMC>11</WMC><DIT>1</DIT><NOC>0</NOC><CBO>21</CBO><RFC>40</RFC><LCOM>0</LCOM><Ca>1</Ca><NPM>8</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.CkjmOutputHandler</classname><WMC>1</WMC><DIT>1</DIT><NOC>0</NOC><CBO>1</CBO><RFC>1</RFC><LCOM>0</LCOM><Ca>3</Ca><NPM>1</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.ClassMetrics</classname><WMC>24</WMC><DIT>1</DIT><NOC>0</NOC><CBO>0</CBO><RFC>33</RFC><LCOM>196</LCOM><Ca>6</Ca><NPM>23</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.MetricsFilter</classname><WMC>7</WMC><DIT>1</DIT><NOC>0</NOC><CBO>6</CBO><RFC>30</RFC><LCOM>11</LCOM><Ca>2</Ca><NPM>5</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.ClassVisitor</classname><WMC>13</WMC><DIT>1</DIT><NOC>0</NOC><CBO>14</CBO><RFC>71</RFC><LCOM>34</LCOM><Ca>2</Ca><NPM>9</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.ClassMap</classname><WMC>3</WMC><DIT>1</DIT><NOC>0</NOC><CBO>1</CBO><RFC>21</RFC><LCOM>0</LCOM><Ca>0</Ca><NPM>2</NPM></metric>
+<metric><classname>gr.spinellis.ckjm.PrintPlainResults</classname><WMC>2</WMC><DIT>1</DIT><NOC>0</NOC><CBO>2</CBO><RFC>8</RFC><LCOM>0</LCOM><Ca>1</Ca><NPM>2</NPM></metric>
+</ckjm>
+</fmtcode>
+<p />
+To copy the <em>ckjm</em>'s output to the Microsoft Windows clipboard
+to later paste the results into an MS-Word table, simply
+pipe the output of <em>ckjm</em> to the <em>winclip</em> command of the
+<a href="../../outwit">Outwit</a> tool suite.
+<p />
+You can also plot the results in various formats by using
+<a href="http://www.gnuplot.info">gnuplot</a>.
+Here is a diagram depicting the distribution of the CBO metric within
+the classes of <a href="http://www.eclipse.org">Eclipse</a>.<br />
+<img src="eclipse-cbo.png" alt="the distribution of the CBO metric within the classes of Eclipse" />
+</notes>

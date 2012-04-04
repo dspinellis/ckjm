@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<notes>
+To run <em>ckjm</em> you must run java with the <code>-jar</code>
+flag, providing as its argument the location of the file
+<code>ckjm.jar</code>.
+Next, you can specify as arguments the Java class files you want
+to analyze.
+<br />
+Example:
+<fmtcode ext="sh">
+java -jar /usr/local/lib/ckjm-1.5.jar build/classes/gr/spinellis/ckjm/*.class
+</fmtcode>
+(Replace the sequence <code>/usr/local/lib/ckjm-1.5.jar</code>
+with the actual path and filename of the <em>ckjm</em> version you are using.)
+<p />
+The command's output will be a list of class names (prefixed by the
+package they are defined in), followed by the corresponding
+metrics for that class: WMC, DIT, NOC, CBO, RFC, LCOM, Ce, and NPM.
+<pre>
+gr.spinellis.ckjm.ClassMetricsContainer 3 1 0 3 18 0 2 2
+gr.spinellis.ckjm.MethodVisitor 11 1 0 21 40 0 1 8
+gr.spinellis.ckjm.CkjmOutputHandler 1 1 0 1 1 0 3 1
+gr.spinellis.ckjm.ClassMetrics 24 1 0 0 33 196 6 23
+gr.spinellis.ckjm.MetricsFilter 7 1 0 6 30 11 2 5
+gr.spinellis.ckjm.ClassVisitor 13 1 0 14 71 34 2 9
+gr.spinellis.ckjm.ClassMap 3 1 0 1 21 0 0 2
+gr.spinellis.ckjm.PrintPlainResults 2 1 0 2 8 0 1 2
+</pre>
+<p />
+If the classes are located in a <em>jar</em> archive, you can
+specify as a single argument the name of the archive,
+followed by a space, followed by the name of the class in the archive.
+<fmtcode ext="sh">
+java -jar /usr/local/lib/ckjm.jar 'ant-jai.jar   org/apache/tools/ant/types/optional/image/Text.class'
+</fmtcode>
+<p />
+Finally, instead of specifying the classes to be analyszed as the
+command's arguments, you pass them (as class files, or as jar file, class
+file pairs) on the command's standard input.
+The following example will process all class files located in the
+build directory.
+<fmtcode ext="sh">
+find build -name '*.class' -print | java -jar /usr/local/lib/ckjm.jar
+</fmtcode>
+<p />
+The program, by default, will not take into account classes that belong
+to the Java SDK packages.
+The command-line option switch <code>-s</code>, can be used to enable this
+processing.
+</notes>

@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<notes>
+First define the <em>ant</em> task in your <code>build.xml</code> file.
+The <em>ckjm</em> jar file should be in the classpath.
+
+<fmtcode ext="xml">
+<taskdef name="ckjm" classname="gr.spinellis.ckjm.ant.CkjmTask">
+  <classpath>
+    <pathelement location="path/to/ckjm1-2.jar"/>
+  </classpath>
+</taskdef>
+</fmtcode>
+Now you can make use of the <em>ckjm</em> task.
+The attributes of the <em>ckjm</em> task are the following:
+
+<dl>
+<dt>format</dt><dd>'plain' or 'xml'. Default is 'plain'</dd>
+<dt>outputfile</dt><dd>Required. Output will be written to outputfile.</dd>
+<dt>classdir</dt><dd>Required. Base directory which contains the class files.</dd>
+</dl>
+
+The <em>ckjm</em>
+task supports the nested elements &lt;include&gt; and &lt;exclude&gt;,
+which can be used to select the class files and the nested element
+&lt;extdirs&gt;, which is used to specify other class files participating in the
+inheritance hierarchy.
+The elements support
+<a href="http://ant.apache.org/manual/using.html#path">path-like structures</a>.
+
+Example usage:
+<fmtcode ext="xml">
+<ckjm outputfile="ckjm.xml" format="xml" classdir="build/classes">
+  <include name="**/*.class" />
+  <exclude name="**/*Test.class" />
+  <extdirs path="lib" />
+</ckjm>
+</fmtcode>
+
+You can use an XSL stylesheet to generate an HTML report from the XML
+output file.
+
+Example:
+<fmtcode ext="xml">
+<style in="ckjm.xml" style="path/to/ckjm.xsl" out="ckjm.html" />
+</fmtcode>
+
+The distribution contains in the <code>xsl</code> directory
+two sample XSL files.
+
+Here is a complete example of a build.xml file.
+<fmtcode ext="xml">
+<project name="myproject" default="ckjm">
+
+<target name="compile">
+  <!-- your compile instructions -->
+</target>
+
+<target name="ckjm" depends="compile">
+
+  <taskdef name="ckjm" classname="gr.spinellis.ckjm.ant.CkjmTask">
+    <classpath>
+      <pathelement location="path/to/ckjm1-2.jar"/>
+    </classpath>
+  </taskdef>
+
+  <ckjm outputfile="ckjm.xml" format="xml" classdir="build/classes">
+    <include name="**/*.class" />
+    <exclude name="**/*Test.class" />
+  </ckjm>
+
+  <style in="ckjm.xml" style="path/to/ckjm.xsl" out="ckjm.html" />
+</target>
+</fmtcode>
+<p />
+If the analyzed files form part of a class hierarchy of other class files that
+are not part of the analysis, then the <code>extdirs</code>
+<a href="http://ant.apache.org/manual/using.html#path">path-like structure</a>
+of the <em>ckjm</em> task must be set to point to the directory containing
+the corresponding <em>jar</em> files.
+This will internally set the java.ext.dirs property so that
+<em>ckjm</em> can locate the jar files containing those classes.
+</notes>

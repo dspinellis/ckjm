@@ -1,0 +1,16 @@
+#!/bin/sed -f
+1i\
+<?xml version="1.0" ?>\
+<ckjm>
+s/^/<metric><classname>/
+s/ /<\/classname><WMC>/
+s/ /<\/WMC><DIT>/
+s/ /<\/DIT><NOC>/
+s/ /<\/NOC><CBO>/
+s/ /<\/CBO><RFC>/
+s/ /<\/RFC><LCOM>/
+s/ /<\/LCOM><Ca>/
+s/ /<\/Ca><NPM>/
+s/$/<\/NPM><\/metric>/
+$a\
+</ckjm>

@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<notes>
+The metrics <em>ckjm</em> will calculate and display for
+each class are the following.
+<dl>
+<dt>WMC - Weighted methods per class</dt><dd>
+A class's <em>weighted methods per class</em> WMC
+metric is simply the sum of the complexities of its methods.
+As a measure of complexity we can use the cyclomatic complexity,
+or we can abritrarily assign a complexity value of 1 to each method.
+The <em>ckjm</em> program assigns a complexity value of 1 to each method,
+and therefore the value of the WMC is equal to the number of methods
+in the class.
+</dd><dt>DIT - Depth of Inheritance Tree</dt><dd>
+The <em>depth of inheritance tree</em> (DIT) metric provides
+for each class a measure of the inheritance levels from the object
+hierarchy top.
+In Java where all classes inherit Object the minimum value
+of DIT is 1.
+</dd><dt>NOC - Number of Children</dt><dd>
+A class's <em>number of children</em> (NOC)
+metric simply
+measures the number of immediate descendants of the class.
+</dd><dt>CBO - Coupling between object classes</dt><dd>
+The <em>coupling between object classes</em> (CBO)
+metric represents the number of classes coupled to a given
+class (efferent couplings, Ce).
+This coupling can occur through method calls,
+field accesses, inheritance, arguments, return types,
+and exceptions.
+</dd><dt>RFC - Response for a Class</dt><dd>
+The metric called the <em>response for a class</em> (RFC)
+measures the number of different
+methods that can be executed when an object of that
+class receives a message (when a method is invoked
+for that object).
+Ideally, we would want to find for each method
+of the class, the methods that class will call,
+and repeat this for each called method,
+calculating what is called the <em>transitive closure</em>
+of the method's call graph.
+This process can however be both expensive and quite
+inaccurate.
+In <em>ckjm</em>, we calculate a rough
+approximation to the response set
+by simply inspecting method calls within the class's
+method bodies.
+This simplification was also used in the 1994 Chidamber and Kemerer
+description of the metrics.
+</dd><dt>LCOM - Lack of cohesion in methods</dt><dd>
+A class's <em>lack of cohesion in methods</em> (LCOM)
+metric counts the sets of methods in a class that are not related
+through the sharing of some of the class's fields.
+The original definition of this metric
+(which is the one used in <em>ckjm</em>)
+considers all pairs of a class's methods.
+In some of these pairs both methods access at
+least one common field of the class, while in
+other pairs the two methods to not share any
+common field accesses.
+The lack of cohesion in methods is then calculated
+by subtracting from the number of method pairs
+that don't share a field access the number of
+method pairs that do.
+Note that subsequent definitions
+of this metric used as a measurement basis the number
+of disjoint graph components of the class's methods.
+Others modified the definition of connectedness to
+include calls between the methods of the class.
+The program <em>ckjm</em> follows the original (1994) definition
+by Chidamber and Kemerer.
+</dd><dt>Ca - Afferent couplings</dt><dd>
+A class's afferent couplings is a measure of how many other classes
+use the specific class.
+Ca is calculated using the same definition as that used for
+calculating CBO (Ce).
+</dd><dt>NPM - Number of Public Methods</dt><dd>
+The NPM metric simply counts all the methods in a class that
+are declared as public.
+It can be used to measure the size of an API provided by a package.
+</dd>
+</dl>
+</notes>

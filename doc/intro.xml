@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-7" ?>
+<notes>
+<p>
+The program <em>ckjm</em> calculates Chidamber and Kemerer object-oriented
+metrics by processing the bytecode of compiled Java files.
+The program calculates for each class the following six metrics, and displays
+them on its standard output, following the class's name:
+</p>
+<ul>
+<li>WMC: Weighted methods per class</li>
+<li>DIT: Depth of Inheritance Tree</li>
+<li>NOC: Number of Children</li>
+<li>CBO: Coupling between object classes</li>
+<li>RFC: Response for a Class</li>
+<li>LCOM: Lack of cohesion in methods</li>
+<li>Ca: Afferent coupling (not a C&amp;K metric)</li>
+<li>NPM: Number of Public Methods for a class (not a C&amp;K metric)</li>
+</ul>
+<p>
+I wrote this program out of frustration over the
+<a href="../../../blog/20050211/">lack</a>
+of reliable programs to calculate the
+Chidamber and Kemerer object-oriented metrics.
+The programs I found on the web were either
+incomplete (they calculated only some of the metrics),
+or unreliable (they calculated results that were obviously wrong),
+or extremely inefficient (they required GBs of RAM and hours of processing).
+<em>Ckjm</em> is mean and lean, following the Unix tradition of doing
+one thing well.
+It will not automatically recurse directories looking for the files
+you want measured,
+it does not offer a GUI and fancy diagrams (or even an XML output facility),
+and it calculates only few metrics other than the six ones specified
+by Chidamber and Kemerer.
+However, it does this job thoroughly, and efficiently:
+on a 1.6GHz Pentium-M machine version 1.1 of the tool
+processed the 33MB of the Eclipse 3.0
+jar files (19717 classes) in 95 seconds.
+</p>
+<p>
+To run the program you simply specify the class files
+(or pairs of jar/class files)
+on its command line or standard input.
+The program will produce on its standard output a line for each class
+containing the complete name of the class and the values of the corresponding
+class metrics.
+This operation model allows the tool to be easilly extended using textual
+pre and post processors.
+</p>
+</notes>

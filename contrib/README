@@ -1,0 +1,4 @@
+This directory contains contributed code that has been designed
+to interoperate with ckjm.
+
+ckjm_ruby-1.0	contains Runy scripts to plot the ckjm metrics in charts.
