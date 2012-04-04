@@ -2,9 +2,11 @@
 <notes>
 <dl>
 
-<dt>Version 1.9 Under development</dt><dd>
+<dt>Version 1.9 2012-04-04</dt><dd>
 <ul>
 <li> Integrated BCEL 5.2 (Andre Fleischer).</li>
+<li> Fixed <code>java.lang.NoSuchMethodError: org.apache.bcel.classfile.JavaClass.getSuperClasses()</code>.</li>
+<li> Migrated source code repository to git and GitHub.</li>
 </ul>
 </dd>
 
