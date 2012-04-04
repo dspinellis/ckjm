@@ -1,5 +1,5 @@
 /*
- * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.20 2007/07/25 12:24:00 dds Exp $
+ * $Id: \\dds\\src\\Research\\ckjm.RCS\\src\\gr\\spinellis\\ckjm\\ClassVisitor.java,v 1.21 2012/04/04 13:08:23 dds Exp $
  *
  * (C) Copyright 2005 Diomidis Spinellis
  *
@@ -29,7 +29,7 @@ import java.lang.reflect.Modifier;
  * Visit a class updating its Chidamber-Kemerer metrics.
  *
  * @see ClassMetrics
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a>
  */
 public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
@@ -84,7 +84,11 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 	ClassMetrics pm = cmap.getMetrics(super_name);
 
 	pm.incNoc();
-	cm.setDit(jc.getSuperClasses().length);
+	try {
+	    cm.setDit(jc.getSuperClasses().length);
+	} catch( ClassNotFoundException ex) {
+	    System.err.println("Error obtaining all superclasses of " + jc);
+	}
 	registerCoupling(super_name);
 
 	String ifs[] = jc.getInterfaceNames();
