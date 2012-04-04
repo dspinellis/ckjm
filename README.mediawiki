@@ -1,0 +1,15 @@
+The program ''ckjm'' calculates Chidamber and Kemerer object-oriented metrics by processing the bytecode of compiled Java files. The program calculates for each class the following six metrics proposed by Chidamber and Kemerer.
+
+* WMC: Weighted methods per class
+* DIT: Depth of Inheritance Tree
+* NOC: Number of Children
+* CBO: Coupling between object classes
+* RFC: Response for a Class
+* LCOM: Lack of cohesion in methods
+
+In addition it also calculates for each class
+
+* Ca: Afferent couplings
+* NPM: Number of public methods
+
+Visti theproject's [http://www.spinellis.gr/sw/ckjm/ home page] for more information.
