@@ -12,4 +12,7 @@ In addition it also calculates for each class
 * Ca: Afferent couplings
 * NPM: Number of public methods
 
-Visti the project's [http://www.spinellis.gr/sw/ckjm/ home page] for more information.
+If you use this tool in your research, please cite it as follows.
+Diomidis Spinellis. Tool writing: A forgotten art? ''IEEE Software'', 22(4):9–11, July/August 2005. (doi:10.1109/MS.2005.111). 
+
+Visit the project's [http://www.spinellis.gr/sw/ckjm/ home page] for more information.
