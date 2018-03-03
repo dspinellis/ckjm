@@ -8,7 +8,7 @@ ZIPBALL=ckjm-$(VERSION).zip
 DISTDIR=ckjm-$(VERSION)
 WEBDIR=$(UH)/dds/pubs/web/home/sw/ckjm
 SRCFILE=README.txt LICENSE.txt build.xml src/gr/spinellis/ckjm/*.java src/gr/spinellis/ckjm/ant/*.java xsl/*.xsl lib/*.txt
-BCEL=bcel-5.2.jar
+BCEL=bcel-6.0.jar
 EGHTML=output_simple.html output_extra.html
 ART=smallpic.jpg
 
