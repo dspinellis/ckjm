@@ -83,7 +83,7 @@ public class CkjmTask extends MatchingTask {
 
     /**
      * Sets the extension directories that will be used by ckjm.
-     * @param extdirs a path containing .jar files
+     * @param e extdirs a path containing .jar files
      */
     public void setExtdirs(Path e) {
         if (extdirs == null) {
