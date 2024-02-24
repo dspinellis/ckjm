@@ -14,7 +14,7 @@
 <property name="antlib"  location="${env.ANT_HOME}/lib"/>
 <property name="jarfile"  location="${build}/ckjm-${version}.jar"/>
 <property name="javadoc" location="javadoc"/>
-<property name="bcel" value="bcel-6.0.jar"/>
+<property name="bcel" value="bcel-6.8.1.jar"/>
 
 <target name="init">
 	<!-- Create the time stamp -->
