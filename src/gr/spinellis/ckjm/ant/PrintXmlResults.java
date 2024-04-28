@@ -26,32 +26,36 @@ import java.io.PrintStream;
  * @author Julien Rentrop
  */
 public class PrintXmlResults implements CkjmOutputHandler {
-    private PrintStream p;
+    private final PrintStream printStream;
 
-    public PrintXmlResults(PrintStream p) {
-        this.p = p;
+    public PrintXmlResults(PrintStream printStream) {
+        this.printStream = printStream;
     }
 
     public void printHeader() {
-        p.println("<?xml version=\"1.0\"?>");
-        p.println("<ckjm>");
+        printStream.println("<?xml version=\"1.0\"?>");
+        printStream.println("<ckjm>");
     }
 
-    public void handleClass(String name, ClassMetrics c) {
-        p.print("<class>\n" +
-                "<name>" + name + "</name>\n" +
-                "<wmc>" + c.getWmc() + "</wmc>\n" +
-                "<dit>" + c.getDit() + "</dit>\n" +
-                "<noc>" + c.getNoc() + "</noc>\n" +
-                "<cbo>" + c.getCbo() + "</cbo>\n" +
-                "<rfc>" + c.getRfc() + "</rfc>\n" +
-                "<lcom>" + c.getLcom() + "</lcom>\n" +
-                "<ca>" + c.getCa() + "</ca>\n" +
-                "<npm>" + c.getNpm() + "</npm>\n" +
-                "</class>\n");
+    public void handleClass(String name, ClassMetrics classMetrics) {
+        printStream.printf("<class>\n" +
+                "<name>%s</name>\n" +
+                "<wmc>%d</wmc>\n" +
+                "<dit>%d</dit>\n" +
+                "<noc>%d</noc>\n" +
+                "<cbo>%d</cbo>\n" +
+                "<rfc>%d</rfc>\n" +
+                "<lcom>%d</lcom>\n" +
+                "<ca>%d</ca>\n" +
+                "<npm>%d</npm>\n" +
+                "</class>\n",
+                name, classMetrics.getWmc(), classMetrics.getDit(), classMetrics.getNoc(),
+                classMetrics.getCbo(), classMetrics.getRfc(), classMetrics.getLcom(),
+                classMetrics.getCa(), classMetrics.getNpm());
     }
 
-    public void printFooter () {
-        p.println("</ckjm>");
+    public void printFooter() {
+        printStream.println("</ckjm>");
     }
 }
+

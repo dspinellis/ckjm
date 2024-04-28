@@ -37,64 +37,57 @@ import org.apache.tools.ant.types.Path;
  * @author Julien Rentrop
  */
 public class CkjmTask extends MatchingTask {
+    private static final String FORMAT_PLAIN = "plain";
+    private static final String FORMAT_XML = "xml";
+
     private File outputFile;
-
     private File classDir;
-
     private Path extdirs;
-
     private String format;
 
     public CkjmTask() {
-        this.format = "plain";
+        this.format = FORMAT_PLAIN;
     }
 
     /**
      * Sets the format of the output file.
      *
-     * @param format
-     *            the format of the output file. Allowable values are 'plain' or
-     *            'xml'.
+     * @param format the format of the output file. Allowable values are 'plain' or 'xml'.
      */
     public void setFormat(String format) {
         this.format = format;
-
     }
 
     /**
-     * Sets the outputfile
+     * Sets the output file.
      *
-     * @param outputfile
-     *            Location of outputfile
+     * @param outputFile Location of the output file
      */
-    public void setOutputfile(File outputfile) {
-        this.outputFile = outputfile;
+    public void setOutputfile(File outputFile) {
+        this.outputFile = outputFile;
     }
 
     /**
-     * Sets the dir which contains the class files that will be analyzed
+     * Sets the directory which contains the class files that will be analyzed.
      *
-     * @param classDir
-     *            Location of class files
+     * @param classDir Location of class files
      */
     public void setClassdir(File classDir) {
         this.classDir = classDir;
     }
 
     /**
-     * Sets the extension directories that will be used by ckjm.
-     * @param e extdirs a path containing .jar files
+     * Sets the extension directories that will be used by CKJM.
+     *
+     * @param extdirs a path containing .jar files
      */
-    public void setExtdirs(Path e) {
-        if (extdirs == null) {
-            extdirs = e;
-        } else {
-            extdirs.append(e);
-        }
+    public void setExtdirs(Path extdirs) {
+        this.extdirs = extdirs;
     }
 
     /**
-     * Gets the extension directories that will be used by ckjm.
+     * Gets the extension directories that will be used by CKJM.
+     *
      * @return the extension directories as a path
      */
     public Path getExtdirs() {
@@ -103,6 +96,7 @@ public class CkjmTask extends MatchingTask {
 
     /**
      * Adds a path to extdirs.
+     *
      * @return a path to be modified
      */
     public Path createExtdirs() {
@@ -113,14 +107,11 @@ public class CkjmTask extends MatchingTask {
     }
 
     /**
-     * Executes the CKJM Ant Task. This method redirects the output of the CKJM
-     * tool to a file. When XML format is used it will buffer the output and
-     * translate it to the XML format.
+     * Executes the CKJM Ant Task.
      *
-     * @throws BuildException
-     *             if an error occurs.
+     * @throws BuildException if an error occurs.
      */
-    public void execute() throws BuildException {
+    public void execute() {
         if (classDir == null) {
             throw new BuildException("classdir attribute must be set!");
         }
@@ -131,46 +122,37 @@ public class CkjmTask extends MatchingTask {
             throw new BuildException("classdir is not a directory!");
         }
 
-	if (extdirs != null && extdirs.size() > 0) {
-	    if (System.getProperty("java.ext.dirs").length() == 0)
-		System.setProperty("java.ext.dirs", extdirs.toString());
-	    else
-		System.setProperty("java.ext.dirs",
-		    System.getProperty("java.ext.dirs") + File.pathSeparator +
-		    extdirs);
-	}
+        if (extdirs != null && extdirs.size() > 0) {
+            System.setProperty("java.ext.dirs", extdirs.toString());
+        }
 
         DirectoryScanner ds = super.getDirectoryScanner(classDir);
-
-        String files[] = ds.getIncludedFiles();
+        String[] files = ds.getIncludedFiles();
         if (files.length == 0) {
             log("No class files in specified directory " + classDir);
         } else {
             for (int i = 0; i < files.length; i++) {
-                files[i] = classDir.getPath() + File.separatorChar + files[i];
+                files[i] = new File(classDir, files[i]).getPath();
             }
 
             try {
-                OutputStream outputStream = new FileOutputStream(outputFile);
-
-                if (format.equals("xml")) {
-                    PrintXmlResults outputXml = new PrintXmlResults(
-                            new PrintStream(outputStream));
-
-                    outputXml.printHeader();
-                    MetricsFilter.runMetrics(files, outputXml);
-                    outputXml.printFooter();
-                } else {
-                    PrintPlainResults outputPlain = new PrintPlainResults(
-                            new PrintStream(outputStream));
-                    MetricsFilter.runMetrics(files, outputPlain);
-                }
-
-                outputStream.close();
-
+                processMetrics(files, new FileOutputStream(outputFile));
             } catch (IOException ioe) {
-                throw new BuildException("Error file handling: "
-                        + ioe.getMessage());
+                throw new BuildException("Error file handling: " + ioe.getMessage(), ioe);
+            }
+        }
+    }
+
+    private void processMetrics(String[] files, OutputStream outputStream) throws IOException {
+        try (OutputStream os = outputStream) {
+            if (FORMAT_XML.equals(format)) {
+                PrintXmlResults outputXml = new PrintXmlResults(new PrintStream(os));
+                outputXml.printHeader();
+                MetricsFilter.runMetrics(files, outputXml);
+                outputXml.printFooter();
+            } else {
+                PrintPlainResults outputPlain = new PrintPlainResults(new PrintStream(os));
+                MetricsFilter.runMetrics(files, outputPlain);
             }
         }
     }
