@@ -18,8 +18,6 @@ package gr.spinellis.ckjm;
 
 import org.apache.bcel.generic.*;
 import org.apache.bcel.Constants;
-import org.apache.bcel.util.*;
-import java.util.*;
 
 /**
  * Visit a method calculating the class's Chidamber-Kemerer metrics.
@@ -49,16 +47,26 @@ class MethodVisitor extends EmptyVisitor {
 
     /** Start the method's visit. */
     public void start() {
-	if (!mg.isAbstract() && !mg.isNative()) {
-	    for (InstructionHandle ih = mg.getInstructionList().getStart();
-		 ih != null; ih = ih.getNext()) {
-		Instruction i = ih.getInstruction();
+	if (notAbstractNotNative()) {
+        handleInstructions();
+    }
+    }
 
-		if(!visitInstruction(i))
-		    i.accept(this);
-	    }
-	    updateExceptionHandlers();
-	}
+    private void handleInstructions() {
+        for (InstructionHandle ih = mg.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
+        Instruction i = ih.getInstruction();
+
+        if(!visitInstruction(i))
+            i.accept(this);
+        }
+
+        CodeExceptionGen[] handlers = mg.getExceptionHandlers();
+        /* Measuring decision: couple exceptions */
+        coupleExceptions(handlers);
+    }
+
+    private boolean notAbstractNotNative() {
+        return !mg.isAbstract() && !mg.isNative();
     }
 
     /** Visit a single instruction. */
@@ -72,8 +80,12 @@ class MethodVisitor extends EmptyVisitor {
 
     /** Local variable use. */
     public void visitLocalVariableInstruction(LocalVariableInstruction i) {
-	if(i.getOpcode() != Constants.IINC)
+	if(OpcodeNotEqualConstants(i))
 	    cv.registerCoupling(i.getType(cp));
+    }
+
+    private static boolean OpcodeNotEqualConstants(LocalVariableInstruction i) {
+        return i.getOpcode() != Constants.IINC;
     }
 
     /** Array use. */
@@ -90,11 +102,15 @@ class MethodVisitor extends EmptyVisitor {
     /** Method invocation. */
     public void visitInvokeInstruction(InvokeInstruction i) {
 	Type[] argTypes   = i.getArgumentTypes(cp);
-	for (int j = 0; j < argTypes.length; j++)
-	    cv.registerCoupling(argTypes[j]);
-	cv.registerCoupling(i.getReturnType(cp));
+    registerCoupling(argTypes);
+    cv.registerCoupling(i.getReturnType(cp));
 	/* Measuring decision: measure overloaded methods separately */
 	cv.registerMethodInvocation(i.getClassName(cp), i.getMethodName(cp), argTypes);
+    }
+
+    private void registerCoupling(Type[] argTypes) {
+        for (int j = 0; j < argTypes.length; j++)
+            cv.registerCoupling(argTypes[j]);
     }
 
     /** Visit an instanceof instruction. */
@@ -112,15 +128,15 @@ class MethodVisitor extends EmptyVisitor {
 	cv.registerCoupling(i.getType(cp));
     }
 
-    /** Visit the method's exception handlers. */
-    private void updateExceptionHandlers() {
-	CodeExceptionGen[] handlers = mg.getExceptionHandlers();
+    private void coupleExceptions(CodeExceptionGen[] handlers) {
+        for(int i = 0; i < handlers.length; i++) {
+            Type t = handlers[i].getCatchType();
+            if (tNotNULL(t))
+            cv.registerCoupling(t);
+        }
+    }
 
-	/* Measuring decision: couple exceptions */
-	for(int i=0; i < handlers.length; i++) {
-	    Type t = handlers[i].getCatchType();
-	    if (t != null)
-		cv.registerCoupling(t);
-	}
+    private static boolean tNotNULL(Type t) {
+        return t != null;
     }
 }
