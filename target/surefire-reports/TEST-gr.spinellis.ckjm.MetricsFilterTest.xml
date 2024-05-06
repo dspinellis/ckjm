@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="gr.spinellis.ckjm.MetricsFilterTest" time="1.055" tests="1" errors="1" skipped="0" failures="0">
+  <properties>
+    <property name="sun.desktop" value="windows"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.specification.version" value="11"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="D:\FAST\Semester 8\SRE\Project\SRE_CKJM_PROJECT_FAST\target\test-classes;D:\FAST\Semester 8\SRE\Project\SRE_CKJM_PROJECT_FAST\target\classes;C:\Users\plato\.m2\repository\org\apache\ant\ant\1.10.5\ant-1.10.5.jar;C:\Users\plato\.m2\repository\org\apache\ant\ant-launcher\1.10.5\ant-launcher-1.10.5.jar;C:\Users\plato\.m2\repository\org\apache\bcel\bcel\6.0\bcel-6.0.jar;C:\Users\plato\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\plato\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
+    <property name="java.vendor.url" value="https://openjdk.java.net/"/>
+    <property name="user.timezone" value="Asia/Karachi"/>
+    <property name="java.vm.specification.version" value="11"/>
+    <property name="os.name" value="Windows 11"/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-11\bin"/>
+    <property name="sun.java.command" value="C:\Users\plato\AppData\Local\Temp\surefire13676152475809039015\surefirebooter17443831143788420443.jar C:\Users\plato\AppData\Local\Temp\surefire13676152475809039015 2024-05-06T21-47-42_076-jvmRun1 surefire8639503823838400647tmp surefire_08139890487274873114tmp"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="surefire.test.class.path" value="D:\FAST\Semester 8\SRE\Project\SRE_CKJM_PROJECT_FAST\target\test-classes;D:\FAST\Semester 8\SRE\Project\SRE_CKJM_PROJECT_FAST\target\classes;C:\Users\plato\.m2\repository\org\apache\ant\ant\1.10.5\ant-1.10.5.jar;C:\Users\plato\.m2\repository\org\apache\ant\ant-launcher\1.10.5\ant-launcher-1.10.5.jar;C:\Users\plato\.m2\repository\org\apache\bcel\bcel\6.0\bcel-6.0.jar;C:\Users\plato\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\plato\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="user.home" value="C:\Users\plato"/>
+    <property name="user.language" value="en"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.version.date" value="2024-01-16"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-11"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="D:\FAST\Semester 8\SRE\Project\SRE_CKJM_PROJECT_FAST"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="surefire.real.class.path" value="C:\Users\plato\AppData\Local\Temp\surefire13676152475809039015\surefirebooter17443831143788420443.jar"/>
+    <property name="user.script" value=""/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="java.runtime.version" value="11.0.22+9-LTS-219"/>
+    <property name="user.name" value="plato"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="java.vendor.version" value="18.9"/>
+    <property name="maven.ext.class.path" value="D:\Program Files\NetBeans-20\netbeans\java\maven-nblib\netbeans-eventspy.jar"/>
+    <property name="localRepository" value="C:\Users\plato\.m2\repository"/>
+    <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
+    <property name="java.io.tmpdir" value="C:\Users\plato\AppData\Local\Temp\"/>
+    <property name="java.version" value="11.0.22"/>
+    <property name="user.dir" value="D:\FAST\Semester 8\SRE\Project\SRE_CKJM_PROJECT_FAST"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-11\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\Java\jre7\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\nodejs\;D:\Program Files\mongosh-1.10.1-win32-x64\bin;C:\Program Files\MongoDB\Server\6.0\bin;C:\Program Files\Git\cmd;D:\Program Files\Neovim\bin;C:\ProgramData\chocolatey\bin;D:\Program Files\mingw64\bin;C:\Users\plato\.cargo\bin;C:\Users\plato\AppData\Local\Programs\Python\Launcher\;C:\Users\plato\scoop\shims;C:\Users\plato\AppData\Local\Microsoft\WindowsApps;C:\Users\plato\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\plato\AppData\Roaming\npm;C:\Users\plato\AppData\Local\GitHubDesktop\bin;C:\Program Files\MongoDB\Server\6.0\bin;C:\Users\plato\AppData\Local\Android\Sdk\platforms;C:\Users\plato\AppData\Local\Programs\Python\Python312\Scripts;C:\Users\plato\.cargo\bin;D:\Program Files\Neovim\bin;."/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.vm.version" value="11.0.22+9-LTS-219"/>
+    <property name="java.specification.maintenance.version" value="2"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="java.class.version" value="55.0"/>
+  </properties>
+  <testcase name="test" classname="gr.spinellis.ckjm.MetricsFilterTest" time="1.021">
+    <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at gr.spinellis.ckjm.MetricsFilterTest.test(MetricsFilterTest.java:35)
+</error>
+    <system-err><![CDATA[Error loading 8\SRE\Project\SRE_CKJM_PROJECT_FAST\target\classes\gr\spinellis\ckjm\MetricsFilter.class from D:\FAST\Semester: java.nio.file.NoSuchFileException: D:\FAST\Semester
+]]></system-err>
+  </testcase>
+</testsuite>

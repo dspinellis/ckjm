@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: gr.spinellis.ckjm.MetricsFilterTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 1.055 s <<< FAILURE! - in gr.spinellis.ckjm.MetricsFilterTest
+test(gr.spinellis.ckjm.MetricsFilterTest)  Time elapsed: 1.021 s  <<< ERROR!
+java.lang.NullPointerException
+	at gr.spinellis.ckjm.MetricsFilterTest.test(MetricsFilterTest.java:35)
+

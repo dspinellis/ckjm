@@ -107,38 +107,54 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
 
     /** Add a given class to the classes we are coupled to */
     public void registerCoupling(String className) {
-	/* Measuring decision: don't couple to Java SDK */
-	if ((MetricsFilter.isJdkIncluded() ||
-	     !ClassMetrics.isJdkClass(className)) &&
-	    !myClassName.equals(className)) {
-	    efferentCoupledClasses.add(className);
-	    cmap.getMetrics(className).addAfferentCoupling(myClassName);
-	}
+		/* Measuring decision: don't couple to Java SDK */
+		if ((MetricsFilter.isJdkIncluded() ||
+			 !ClassMetrics.isJdkClass(className)) &&
+			!myClassName.equals(className)) {
+			efferentCoupledClasses.add(className);
+			cmap.getMetrics(className).addAfferentCoupling(myClassName);
+		}
     }
 
     /* Add the type's class to the classes we are coupled to */
     public void registerCoupling(Type t) {
-	registerCoupling(className(t));
+		registerCoupling(className(t));
     }
 
     /* Add a given class to the classes we are coupled to */
     void registerFieldAccess(String className, String fieldName) {
-	registerCoupling(className);
-	if (className.equals(myClassName))
-	    mi.get(mi.size() - 1).add(fieldName);
+		registerCoupling(className);
+		if (className.equals(myClassName))
+			mi.get(mi.size() - 1).add(fieldName);
     }
 
     /* Add a given method to our response set */
     void registerMethodInvocation(String className, String methodName, Type[] args) {
-	registerCoupling(className);
-	/* Measuring decision: calls to JDK methods are included in the RFC calculation */
-	incRFC(className, methodName, args);
+		registerCoupling(className);
+		/* Measuring decision: calls to JDK methods are included in the RFC calculation */
+		incRFC(className, methodName, args);
     }
-
-    /** Called when a field access is encountered. */
-    public void visitField(Field field) {
-	registerCoupling(field.getType());
-    }
+	// Encapsulate the calculation of LCOM into a separate method
+	private int calculateLCOM(ArrayList<TreeSet<String>> mi) {
+		int lcom = 0;
+		for (int i = 0; i < mi.size(); i++) {
+			for (int j = i + 1; j < mi.size(); j++) {
+				TreeSet<?> intersection = (TreeSet<?>) mi.get(i).clone();
+				intersection.retainAll(mi.get(j));
+				if (intersection.isEmpty()) {
+					lcom++;
+				} else {
+					lcom--;
+				}
+			}
+		}
+		return Math.max(lcom, 0); // Ensure LCOM is non-negative
+	}
+	// Use enhanced for loop to iterate over fields
+	@Override
+	public void visitField(Field field) {
+		registerCoupling(field.getType());
+	}
 
     /** Called when encountering a method that should be included in the
         class's RFC. */
@@ -150,67 +166,53 @@ public class ClassVisitor extends org.apache.bcel.classfile.EmptyVisitor {
         responseSet.add(signature);
     }
 
-    /** Called when a method invocation is encountered. */
-    public void visitMethod(Method method) {
-	MethodGen mg = new MethodGen(method, visitedClass.getClassName(), cp);
+	@Override
+	public void visitMethod(Method method) {
+		MethodGen mg = new MethodGen(method, visitedClass.getClassName(), cp);
 
-	Type   result_type = mg.getReturnType();
-	Type[] argTypes   = mg.getArgumentTypes();
+		Type resultType = mg.getReturnType();
+		Type[] argTypes = mg.getArgumentTypes();
 
-	registerCoupling(mg.getReturnType());
-	for (int i = 0; i < argTypes.length; i++)
-	    registerCoupling(argTypes[i]);
+		registerCoupling(resultType);
+		for (Type argType : argTypes) {
+			registerCoupling(argType);
+		}
 
-	String[] exceptions = mg.getExceptions();
-	for (int i = 0; i < exceptions.length; i++)
-	    registerCoupling(exceptions[i]);
+		String[] exceptions = mg.getExceptions();
+		for (String exception : exceptions) {
+			registerCoupling(exception);
+		}
 
-	/* Measuring decision: A class's own methods contribute to its RFC */
-	incRFC(myClassName, method.getName(), argTypes);
+		incRFC(myClassName, method.getName(), argTypes);
 
-	cm.incWmc();
-	if (Modifier.isPublic(method.getModifiers()))
-		cm.incNpm();
-	mi.add(new TreeSet<String>());
-	MethodVisitor factory = new MethodVisitor(mg, this);
-	factory.start();
-    }
+		cm.incWmc();
+		if (Modifier.isPublic(method.getModifiers())) {
+			cm.incNpm();
+		}
+
+		ArrayList<TreeSet<String>> methodInteractions = new ArrayList<>();
+		MethodVisitor factory = new MethodVisitor(mg, this, methodInteractions);
+		factory.start();
+		mi.addAll(methodInteractions);
+	}
 
     /** Return a class name associated with a type. */
     static String className(Type t) {
-	String ts = t.toString();
+		String ts = t.toString();
 
-	if (t.getType() <= Constants.T_VOID) {
-	    return "java.PRIMITIVE";
-	} else if(t instanceof ArrayType) {
-	    ArrayType at = (ArrayType)t;
-	    return className(at.getBasicType());
-	} else {
-	    return t.toString();
+		if (t.getType() <= Constants.T_VOID) {
+			return "java.PRIMITIVE";
+		} else if(t instanceof ArrayType) {
+			ArrayType at = (ArrayType)t;
+			return className(at.getBasicType());
+		} else {
+			return t.toString();
+		}
+    }
+
+	public void end() {
+		cm.setCbo(efferentCoupledClasses.size());
+		cm.setRfc(responseSet.size());
+		cm.setLcom(calculateLCOM(mi));
 	}
-    }
-
-    /** Do final accounting at the end of the visit. */
-    public void end() {
-	cm.setCbo(efferentCoupledClasses.size());
-	cm.setRfc(responseSet.size());
-	/*
-	 * Calculate LCOM  as |P| - |Q| if |P| - |Q| > 0 or 0 otherwise
-	 * where
-	 * P = set of all empty set intersections
-	 * Q = set of all nonempty set intersections
-	 */
-	int lcom = 0;
-	for (int i = 0; i < mi.size(); i++)
-	    for (int j = i + 1; j < mi.size(); j++) {
-		/* A shallow unknown-type copy is enough */
-		TreeSet<?> intersection = (TreeSet<?>)mi.get(i).clone();
-		intersection.retainAll(mi.get(j));
-		if (intersection.size() == 0)
-		    lcom++;
-		else
-		    lcom--;
-	    }
-	cm.setLcom(lcom > 0 ? lcom : 0);
-    }
 }
