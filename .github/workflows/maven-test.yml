@@ -1,0 +1,29 @@
+name: Maven Test Workflow
+
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up Java with Maven
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # Use Eclipse Temurin as the JDK distribution
+          java-version: '17'
+          cache: 'maven'          # Enable caching for Maven dependencies
+
+      # Build and run tests using Maven
+      - name: Build and run tests
+        run: mvn test
